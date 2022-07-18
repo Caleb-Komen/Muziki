@@ -1,0 +1,27 @@
+package com.techdroidcentre.data.queries
+
+import android.content.Context
+import android.database.Cursor
+import android.provider.MediaStore
+
+class AlbumQuery(
+    private val context: Context
+) {
+    fun getAlbumsCursor(): Cursor? {
+        val projection = arrayOf(
+            MediaStore.Audio.Albums._ID,
+            MediaStore.Audio.Albums.ALBUM,
+            MediaStore.Audio.Albums.NUMBER_OF_SONGS,
+            MediaStore.Audio.Albums.ARTIST
+        )
+        val sortOrder = "${MediaStore.Audio.Albums.ALBUM} ASC"
+
+        return context.contentResolver.query(
+            MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+            projection,
+            null,
+            null,
+            sortOrder
+        )
+    }
+}
