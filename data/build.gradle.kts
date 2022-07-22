@@ -1,6 +1,8 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -34,4 +36,10 @@ android {
 
 dependencies {
     implementation(project(mapOf("path" to ":domain")))
+    implementation(Dependencies.hiltAndroid)
+    kapt(Dependencies.hiltAndroidCompiler)
+}
+
+kapt {
+    correctErrorTypes = true
 }

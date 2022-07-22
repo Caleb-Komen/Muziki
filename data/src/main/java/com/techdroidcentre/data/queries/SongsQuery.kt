@@ -3,9 +3,11 @@ package com.techdroidcentre.data.queries
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class SongsQuery(
-    private val context: Context
+class SongsQuery @Inject constructor(
+    @ApplicationContext private val context: Context
 ) {
     private val projection = arrayOf(
         MediaStore.Audio.Media._ID,

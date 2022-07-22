@@ -3,9 +3,11 @@ package com.techdroidcentre.data.queries
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class AlbumQuery(
-    private val context: Context
+class AlbumQuery @Inject constructor(
+    @ApplicationContext private val context: Context
 ) {
     fun getAlbumsCursor(): Cursor? {
         val projection = arrayOf(

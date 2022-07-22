@@ -5,6 +5,8 @@ object Dependencies {
     const val composeUiToolingPreview = "androidx.compose.ui:ui-tooling-preview:${Versions.compose}"
     const val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
     const val activityCompose = "androidx.activity:activity-compose:${Versions.activityCompose}"
+    const val hiltAndroid = "com.google.dagger:hilt-android:${Versions.hilt}"
+    const val hiltAndroidCompiler = "com.google.dagger:hilt-android-compiler:${Versions.hilt}"
 
     const val junit4 = "junit:junit:${Versions.junit}"
     const val testExtJunit= "androidx.test.ext:junit:${Versions.testExtJunit}"

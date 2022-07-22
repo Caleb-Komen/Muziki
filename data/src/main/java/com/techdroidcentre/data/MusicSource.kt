@@ -10,13 +10,14 @@ import com.techdroidcentre.data.queries.SongsQuery
 import com.techdroidcentre.domain.models.Album
 import com.techdroidcentre.domain.models.Artist
 import com.techdroidcentre.domain.models.Song
+import javax.inject.Inject
 
-class MusicSource(
+class MusicSource @Inject constructor(
     private val songsQuery: SongsQuery,
     private val albumQuery: AlbumQuery,
     private val artistQuery: ArtistQuery
 ) {
-    fun getAllSongs(): List<Song> {
+    suspend fun getAllSongs(): List<Song> {
         val songs = mutableListOf<Song>()
         val query = songsQuery.getSongsCursor()
         query?.use { cursor ->
@@ -40,7 +41,7 @@ class MusicSource(
         return songs
     }
 
-    fun getAlbums(): List<Album> {
+    suspend fun getAlbums(): List<Album> {
         val albums = mutableListOf<Album>()
         albumQuery.getAlbumsCursor()?.use { cursor ->
             val idColumn = cursor.getColumnIndex(MediaStore.Audio.Albums._ID)
@@ -56,7 +57,7 @@ class MusicSource(
         return albums
     }
 
-    fun getArtists(): List<Artist> {
+    suspend fun getArtists(): List<Artist> {
         val artists = mutableListOf<Artist>()
         artistQuery.getArtistsCursor()?.use { cursor ->
             val idColumn = cursor.getColumnIndex(MediaStore.Audio.Artists._ID)
