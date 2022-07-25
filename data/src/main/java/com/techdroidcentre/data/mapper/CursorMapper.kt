@@ -1,18 +1,11 @@
 package com.techdroidcentre.data.mapper
 
 import android.content.ContentUris
-import android.content.Context
 import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
-import android.util.Size
 import com.techdroidcentre.domain.models.Album
 import com.techdroidcentre.domain.models.Artist
 import com.techdroidcentre.domain.models.Song
-import java.io.IOException
 
 fun Cursor.toSong(
     idColumn: Int,
