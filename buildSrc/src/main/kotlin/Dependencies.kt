@@ -7,6 +7,9 @@ object Dependencies {
     const val activityCompose = "androidx.activity:activity-compose:${Versions.activityCompose}"
     const val hiltAndroid = "com.google.dagger:hilt-android:${Versions.hilt}"
     const val hiltAndroidCompiler = "com.google.dagger:hilt-android-compiler:${Versions.hilt}"
+    const val media = "androidx.media:media:${Versions.media}"
+    const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
+    const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
 
     const val junit4 = "junit:junit:${Versions.junit}"
     const val testExtJunit= "androidx.test.ext:junit:${Versions.testExtJunit}"
