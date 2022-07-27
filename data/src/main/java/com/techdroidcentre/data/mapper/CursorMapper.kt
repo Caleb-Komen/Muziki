@@ -1,13 +1,16 @@
 package com.techdroidcentre.data.mapper
 
 import android.content.ContentUris
+import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
+import com.techdroidcentre.data.R
 import com.techdroidcentre.domain.models.Album
 import com.techdroidcentre.domain.models.Artist
 import com.techdroidcentre.domain.models.Song
 
 fun Cursor.toSong(
+    context: Context,
     idColumn: Int,
     artistIdColumn: Int,
     titleColumn: Int,
@@ -22,8 +25,8 @@ fun Cursor.toSong(
     val artistId = getLong(artistIdColumn)
     val albumId = getLong(albumIdColumn)
     val title = getString(titleColumn)
-    val artist = getString(artistColumn)
-    val album = getString(albumColumn)
+    val artistName = getString(artistColumn)
+    val albumName = getString(albumColumn)
     val path = getString(pathColumn)
     val duration = getLong(durationColumn)
     val size = getInt(sizeColumn)
@@ -31,6 +34,9 @@ fun Cursor.toSong(
         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
         id
     ).toString()
+
+    val album = if (albumName == MediaStore.UNKNOWN_STRING) context.getString(R.string.unknown_album_title) else albumName
+    val artist = if (artistName == MediaStore.UNKNOWN_STRING) context.getString(R.string.unknown_artist_title) else artistName
 
     return Song(
         id = id,
@@ -46,14 +52,16 @@ fun Cursor.toSong(
     )
 }
 
-fun Cursor.toArtist(idColumn: Int, artistColumn: Int, numOfTracksColumn: Int): Artist {
+fun Cursor.toArtist(context: Context, idColumn: Int, artistColumn: Int, numOfTracksColumn: Int): Artist {
     val id = getLong(idColumn)
-    val name = getString(artistColumn)
+    val artist = getString(artistColumn)
     val numOfSongs = getInt(numOfTracksColumn)
     val uri = ContentUris.withAppendedId(
         MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
         id
     ).toString()
+
+    val name = if (artist == MediaStore.UNKNOWN_STRING) context.getString(R.string.unknown_artist_title) else artist
 
     return Artist(
         id = id,
@@ -63,7 +71,7 @@ fun Cursor.toArtist(idColumn: Int, artistColumn: Int, numOfTracksColumn: Int): A
     )
 }
 
-fun Cursor.toAlbum(idColumn: Int, albumColumn: Int, artistColumn: Int, numOfSongsColumn: Int): Album {
+fun Cursor.toAlbum(context: Context, idColumn: Int, albumColumn: Int, artistColumn: Int, numOfSongsColumn: Int): Album {
     val id = getLong(idColumn)
     val albumName = getString(albumColumn)
     val artist = getString(artistColumn)
@@ -73,10 +81,12 @@ fun Cursor.toAlbum(idColumn: Int, albumColumn: Int, artistColumn: Int, numOfSong
         id
     ).toString()
 
+    val name = if (albumName == MediaStore.UNKNOWN_STRING) context.getString(R.string.unknown_album_title) else albumName
+
     return Album(
         id = id,
         uri = uri,
-        name = albumName,
+        name = name,
         artist = artist,
         numOfSongs = numOfSongs
     )

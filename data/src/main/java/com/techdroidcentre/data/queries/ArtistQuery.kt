@@ -15,13 +15,13 @@ class ArtistQuery @Inject constructor(
             MediaStore.Audio.Artists.ARTIST,
             MediaStore.Audio.Artists.NUMBER_OF_TRACKS
         )
-        val sortOrder = "${MediaStore.Audio.Artists.ARTIST} ASC"
+
         return context.contentResolver.query(
             MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
             projection,
             null,
             null,
-            sortOrder
+            MediaStore.Audio.Artists.DEFAULT_SORT_ORDER
         )
     }
 

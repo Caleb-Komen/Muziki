@@ -38,6 +38,9 @@ dependencies {
     implementation(project(mapOf("path" to ":domain")))
     implementation(Dependencies.hiltAndroid)
     kapt(Dependencies.hiltAndroidCompiler)
+    implementation(Dependencies.media)
+    implementation(Dependencies.coroutinesCore)
+    implementation(Dependencies.coroutinesAndroid)
 }
 
 kapt {

@@ -3,4 +3,6 @@
     <string name="albums_title">Albums</string>
     <string name="artists_title">Artists</string>
     <string name="songs_title">Songs</string>
+    <string name="unknown_album_title">Unknown Album</string>
+    <string name="unknown_artist_title">Unknown Artist</string>
 </resources>

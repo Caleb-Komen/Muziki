@@ -16,14 +16,13 @@ class AlbumQuery @Inject constructor(
             MediaStore.Audio.Albums.NUMBER_OF_SONGS,
             MediaStore.Audio.Albums.ARTIST
         )
-        val sortOrder = "${MediaStore.Audio.Albums.ALBUM} ASC"
 
         return context.contentResolver.query(
             MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
             projection,
             null,
             null,
-            sortOrder
+            MediaStore.Audio.Albums.DEFAULT_SORT_ORDER
         )
     }
 }

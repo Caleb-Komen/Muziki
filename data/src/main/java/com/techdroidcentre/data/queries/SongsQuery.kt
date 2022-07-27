@@ -12,10 +12,13 @@ class SongsQuery @Inject constructor(
     private val projection = arrayOf(
         MediaStore.Audio.Media._ID,
         MediaStore.Audio.Media.TITLE,
+        MediaStore.Audio.Media.ARTIST_ID,
         MediaStore.Audio.Media.ARTIST,
+        MediaStore.Audio.Media.ALBUM_ID,
         MediaStore.Audio.Media.ALBUM,
         MediaStore.Audio.Media.DATA,
-        MediaStore.Audio.Media.DURATION
+        MediaStore.Audio.Media.DURATION,
+        MediaStore.Audio.Media.SIZE
     )
 
     fun getSongsCursor(): Cursor? {
@@ -24,7 +27,7 @@ class SongsQuery @Inject constructor(
             projection,
             null,
             null,
-            null
+            MediaStore.Audio.Media.DEFAULT_SORT_ORDER
         )
     }
 }
