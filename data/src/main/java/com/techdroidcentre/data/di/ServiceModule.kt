@@ -8,6 +8,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ServiceComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ServiceScoped
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 @InstallIn(ServiceComponent::class)
 @Module
@@ -22,4 +24,8 @@ object ServiceModule {
     ): MediaQuery {
         return MediaQueryImpl(songsQuery, albumQuery, artistQuery, context)
     }
+
+    @ServiceScoped
+    @Provides
+    fun provideCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.IO
 }

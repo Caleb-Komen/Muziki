@@ -4,12 +4,13 @@ import android.support.v4.media.MediaMetadataCompat
 import com.techdroidcentre.data.State.*
 import com.techdroidcentre.data.mapper.toMediaMetadataCompat
 import com.techdroidcentre.data.queries.MediaQuery
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MusicSource @Inject constructor(
-    private val mediaQuery: MediaQuery
+    private val mediaQuery: MediaQuery,
+    private val dispatcher: CoroutineDispatcher
 ) {
     var songs = emptyList<MediaMetadataCompat>()
     var albums = emptyList<MediaMetadataCompat>()
@@ -41,7 +42,7 @@ class MusicSource @Inject constructor(
         }
     }
 
-    suspend fun fetchSongs() = withContext(Dispatchers.IO) {
+    suspend fun fetchSongs() = withContext(dispatcher) {
         state = STATE_INITIALISING
         val allSongs = mediaQuery.getAllSongs()
         songs = allSongs.map { song ->
@@ -50,7 +51,7 @@ class MusicSource @Inject constructor(
         state = STATE_INITIALISED
     }
 
-    suspend fun fetchAlbums() = withContext(Dispatchers.IO) {
+    suspend fun fetchAlbums() = withContext(dispatcher) {
         state = STATE_INITIALISING
         albums = mediaQuery.getAllAlbums().map { album ->
             album.toMediaMetadataCompat()
@@ -58,7 +59,7 @@ class MusicSource @Inject constructor(
         state = STATE_INITIALISED
     }
 
-    suspend fun fetchArtists() = withContext(Dispatchers.IO) {
+    suspend fun fetchArtists() = withContext(dispatcher) {
         state = STATE_INITIALISING
         albums = mediaQuery.getAllArtists().map { artist ->
             artist.toMediaMetadataCompat()
