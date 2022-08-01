@@ -20,7 +20,7 @@ class MusicSource @Inject constructor(
 
     private var state: State = STATE_CREATED
         set(value) {
-            if (value == STATE_INITIALISED || state == STATE_ERROR) {
+            if (value == STATE_INITIALISED || value == STATE_ERROR) {
                 synchronized(onReadyListeners) {
                     field = value
                     onReadyListeners.forEach { listener ->
@@ -45,26 +45,43 @@ class MusicSource @Inject constructor(
     suspend fun fetchSongs() = withContext(dispatcher) {
         state = STATE_INITIALISING
         val allSongs = mediaQuery.getAllSongs()
-        songs = allSongs.map { song ->
-            song.toMediaMetadataCompat()
+        allSongs?.let { it ->
+            songs = it.map { song ->
+                song.toMediaMetadataCompat()
+            }
+            state = STATE_INITIALISED
+        } ?: run {
+            songs = emptyList()
+            state = STATE_ERROR
         }
-        state = STATE_INITIALISED
     }
 
     suspend fun fetchAlbums() = withContext(dispatcher) {
         state = STATE_INITIALISING
-        albums = mediaQuery.getAllAlbums().map { album ->
-            album.toMediaMetadataCompat()
+        mediaQuery.getAllAlbums()?.let {
+            albums = it.map { album ->
+                album.toMediaMetadataCompat()
+            }
+            state = STATE_INITIALISED
+        } ?: run {
+            albums = emptyList()
+            state = STATE_ERROR
         }
-        state = STATE_INITIALISED
     }
 
     suspend fun fetchArtists() = withContext(dispatcher) {
         state = STATE_INITIALISING
-        albums = mediaQuery.getAllArtists().map { artist ->
-            artist.toMediaMetadataCompat()
-        }
-        state = STATE_INITIALISED
+        mediaQuery.getAllArtists()?.let {
+            artists = it.map {artist ->
+                artist.toMediaMetadataCompat()
+
+            }
+            state = STATE_INITIALISED
+        } ?: run {
+        artists = emptyList()
+        state = STATE_ERROR
+    }
+
     }
 }
 

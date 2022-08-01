@@ -17,4 +17,7 @@ object Dependencies {
     const val composeUiTestJunit4 = "androidx.compose.ui:ui-test-junit4:${Versions.compose}"
     const val composeUiTooling = "androidx.compose.ui:ui-tooling:${Versions.compose}"
     const val composeUiTestManifest = "androidx.compose.ui:ui-test-manifest:${Versions.compose}"
+    const val truth = "com.google.truth:truth:${Versions.truth}"
+    const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
+    const val robolectric = "org.robolectric:robolectric:${Versions.robolectric}"
 }

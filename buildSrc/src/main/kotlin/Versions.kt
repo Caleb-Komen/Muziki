@@ -9,4 +9,6 @@ object Versions {
     const val junit = "4.13.2"
     const val testExtJunit = "1.1.3"
     const val espresso = "3.4.0"
+    const val truth = "1.1.3"
+    const val robolectric = "4.8.1"
 }

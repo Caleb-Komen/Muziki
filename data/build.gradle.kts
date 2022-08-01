@@ -32,6 +32,12 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    testOptions {
+        unitTests.apply {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -41,6 +47,11 @@ dependencies {
     implementation(Dependencies.media)
     implementation(Dependencies.coroutinesCore)
     implementation(Dependencies.coroutinesAndroid)
+
+    testImplementation(Dependencies.truth)
+    testImplementation(Dependencies.coroutinesTest)
+    testImplementation(Dependencies.junit4)
+    testImplementation(Dependencies.robolectric)
 }
 
 kapt {

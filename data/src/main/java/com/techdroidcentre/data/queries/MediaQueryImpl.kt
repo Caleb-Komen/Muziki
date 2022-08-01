@@ -17,7 +17,7 @@ class MediaQueryImpl @Inject constructor(
     private val artistQuery: ArtistQuery,
     @ApplicationContext private val context: Context
 ): MediaQuery {
-    override fun getAllSongs(): List<Song> {
+    override fun getAllSongs(): List<Song>? {
         val songs = mutableListOf<Song>()
         val query = songsQuery.getSongsCursor()
         query?.use { cursor ->
@@ -37,11 +37,13 @@ class MediaQueryImpl @Inject constructor(
                 )
                 songs.add(song)
             }
+            return songs
+        } ?: run {
+            return null
         }
-        return songs
     }
 
-    override fun getAllAlbums(): List<Album> {
+    override fun getAllAlbums(): List<Album>? {
         val albums = mutableListOf<Album>()
         albumQuery.getAlbumsCursor()?.use { cursor ->
             val idColumn = cursor.getColumnIndex(MediaStore.Audio.Albums._ID)
@@ -53,11 +55,13 @@ class MediaQueryImpl @Inject constructor(
                 val album = cursor.toAlbum(context, idColumn, albumColumn, artistColumn, numOfSongsColumn)
                 albums.add(album)
             }
+            return albums
+        } ?: run {
+            return null
         }
-        return albums
     }
 
-    override fun getAllArtists(): List<Artist> {
+    override fun getAllArtists(): List<Artist>? {
         val artists = mutableListOf<Artist>()
         artistQuery.getArtistsCursor()?.use { cursor ->
             val idColumn = cursor.getColumnIndex(MediaStore.Audio.Artists._ID)
@@ -68,7 +72,9 @@ class MediaQueryImpl @Inject constructor(
                 val artist = cursor.toArtist(context, idColumn, artistColumn, numOfTracksColumn)
                 artists.add(artist)
             }
+            return artists
+        } ?: run {
+            return null
         }
-        return artists
     }
 }
