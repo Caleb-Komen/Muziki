@@ -1,6 +1,8 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -30,4 +32,13 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+}
+
+dependencies {
+    implementation(project(mapOf("path" to ":data")))
+    implementation(Dependencies.media)
+    implementation(Dependencies.exoplayerCore)
+    implementation(Dependencies.extMediaSession)
+    implementation(Dependencies.hiltAndroid)
+    kapt(Dependencies.hiltAndroidCompiler)
 }

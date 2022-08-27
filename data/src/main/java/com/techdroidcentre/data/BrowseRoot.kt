@@ -7,6 +7,8 @@ import android.support.v4.media.MediaMetadataCompat.*
 import com.techdroidcentre.data.util.METADATA_KEY_ALBUM_ID
 import com.techdroidcentre.data.util.METADATA_KEY_ARTIST_ID
 import com.techdroidcentre.data.util.METADATA_KEY_FLAG
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
 const val BROWSABLE_ROOT = "/"
 const val ALBUMS_ROOT = "ALBUMS"
@@ -14,11 +16,11 @@ const val ARTISTS_ROOT = "ARTISTS"
 const val SONGS_ROOT = "SONGS"
 const val RESOURCE_ROOT_URI = "android.resource://com.techdroidcentre.data/drawable/"
 
-class BrowseRoot(
-    context: Context,
+class BrowseRoot @Inject constructor(
+    @ApplicationContext context: Context,
     musicSource: MusicSource
 ) {
-    private val mediaIdToChildren = mutableMapOf<String, MutableList<MediaMetadataCompat>>()
+    val mediaIdToChildren = mutableMapOf<String, MutableList<MediaMetadataCompat>>()
 
     init {
         val rootList = mediaIdToChildren[BROWSABLE_ROOT] ?: mutableListOf()

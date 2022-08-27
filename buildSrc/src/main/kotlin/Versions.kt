@@ -6,6 +6,7 @@ object Versions {
     const val hilt = "2.38.1"
     const val media = "1.6.0"
     const val coroutines = "1.6.4"
+    const val exoplayer = "2.18.1"
     const val junit = "4.13.2"
     const val testExtJunit = "1.1.3"
     const val espresso = "3.4.0"
