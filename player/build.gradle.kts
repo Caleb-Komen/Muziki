@@ -2,7 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
-    id("dagger.hilt.android.plugin")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -40,5 +40,9 @@ dependencies {
     implementation(Dependencies.exoplayerCore)
     implementation(Dependencies.extMediaSession)
     implementation(Dependencies.hiltAndroid)
-    kapt(Dependencies.hiltAndroidCompiler)
+    kapt(Dependencies.hiltCompiler)
+}
+
+kapt {
+    correctErrorTypes = true
 }

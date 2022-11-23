@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
@@ -28,13 +29,13 @@ class MusicService: MediaBrowserServiceCompat() {
     private var currentPlaylistItems: List<MediaMetadataCompat> = emptyList()
 
     @Inject
-    private lateinit var exoplayer: ExoPlayer
+    lateinit var exoplayer: ExoPlayer
 
     @Inject
-    private lateinit var musicSource: MusicSource
+    lateinit var musicSource: MusicSource
 
     @Inject
-    private lateinit var browseRoot: BrowseRoot
+    lateinit var browseRoot: BrowseRoot
 
     override fun onCreate() {
         super.onCreate()
@@ -42,6 +43,7 @@ class MusicService: MediaBrowserServiceCompat() {
         mediaSession = MediaSessionCompat(this, TAG).apply {
             isActive = true
         }
+        sessionToken = mediaSession.sessionToken
 
         val musicPlaybackPreparer = MusicPlaybackPreparer(musicSource) {mediaMetaData, playWhenReady, parentId ->
             val itemToPlay = mediaMetaData
@@ -84,20 +86,32 @@ class MusicService: MediaBrowserServiceCompat() {
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
-        val ready = musicSource.whenReady { success ->
-            if (success) {
-                val children = browseRoot.mediaIdToChildren[parentId]?.map {
-                    MediaBrowserCompat.MediaItem(it.description, it.getLong(METADATA_KEY_FLAG).toInt())
-                }?.toMutableList()
-                result.sendResult(children)
-            } else {
-                result.sendResult(null)
-            }
+        Log.d(TAG, "----- onLoadChildren called -----")
+//        val ready = musicSource.whenReady { success ->
+//            if (success) {
+//                val children = browseRoot.mediaIdToChildren[parentId]?.map {
+//                    MediaBrowserCompat.MediaItem(it.description, it.getLong(METADATA_KEY_FLAG).toInt())
+//                }?.toMutableList()
+//                Log.d(TAG, "----- ${children?.size} -----")
+//                result.sendResult(children)
+//            } else {
+//                result.sendResult(null)
+//            }
+//        }
+
+        val children = browseRoot.mediaIdToChildren[parentId]?.map {
+            MediaBrowserCompat.MediaItem(it.description, it.getLong(METADATA_KEY_FLAG).toInt())
+        }?.toMutableList()
+        children?.also {
+            Log.d(TAG, "----- ${it.size} -----")
+            result.sendResult(it)
+        } ?: run {
+            result.sendResult(null)
         }
 
-        if(!ready) {
-            result.detach()
-        }
+//        if(!ready) {
+//            result.detach()
+//        }
     }
 
 }

@@ -2,7 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
-    id("dagger.hilt.android.plugin")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -43,7 +43,7 @@ android {
 dependencies {
     implementation(project(mapOf("path" to ":domain")))
     implementation(Dependencies.hiltAndroid)
-    kapt(Dependencies.hiltAndroidCompiler)
+    kapt(Dependencies.hiltCompiler)
     implementation(Dependencies.media)
     implementation(Dependencies.coroutinesCore)
     implementation(Dependencies.coroutinesAndroid)

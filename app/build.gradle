@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -36,16 +38,18 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion Versions.compose
+        kotlinCompilerExtensionVersion Versions.composeCompiler
     }
     packagingOptions {
         resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+            excludes += '/META-INF/{AL2.0,LGPL2.1,gradle/incremental.annotation.processors}'
         }
     }
 }
 
 dependencies {
+
+    implementation project(path: ':player')
 
     implementation Dependencies.core
     implementation Dependencies.composeUi
@@ -53,10 +57,22 @@ dependencies {
     implementation Dependencies.composeUiToolingPreview
     implementation Dependencies.lifecycleRuntime
     implementation Dependencies.activityCompose
+    implementation Dependencies.coilCompose
+    implementation Dependencies.viewModelCompose
+    implementation Dependencies.liveDataCompose
+    implementation Dependencies.hiltNavCompose
+    implementation Dependencies.media
+    implementation Dependencies.hiltAndroid
+    kapt Dependencies.hiltCompiler
+
     testImplementation Dependencies.junit4
     androidTestImplementation Dependencies.testExtJunit
     androidTestImplementation Dependencies.espressoCore
     androidTestImplementation Dependencies.composeUiTestJunit4
     debugImplementation Dependencies.composeUiTooling
     debugImplementation Dependencies.composeUiTestManifest
+}
+
+kapt {
+    correctErrorTypes true
 }

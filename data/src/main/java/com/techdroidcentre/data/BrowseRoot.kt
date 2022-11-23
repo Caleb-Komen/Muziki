@@ -14,7 +14,7 @@ const val BROWSABLE_ROOT = "/"
 const val ALBUMS_ROOT = "ALBUMS"
 const val ARTISTS_ROOT = "ARTISTS"
 const val SONGS_ROOT = "SONGS"
-const val RESOURCE_ROOT_URI = "android.resource://com.techdroidcentre.data/drawable/"
+const val RESOURCE_ROOT_URI = "android.resource://com.techdroidcentre.musicplayer/drawable/"
 
 class BrowseRoot @Inject constructor(
     @ApplicationContext context: Context,
