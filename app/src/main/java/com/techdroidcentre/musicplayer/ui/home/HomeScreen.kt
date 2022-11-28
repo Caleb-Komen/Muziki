@@ -1,8 +1,8 @@
 package com.techdroidcentre.musicplayer.ui.home
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,18 +18,19 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.techdroidcentre.musicplayer.model.MediaItemData
 
 @Composable
 fun HomeScreen(
+    navigateToAlbums: (String) -> Unit,
+    navigateToArtists: (String) -> Unit,
+    navigateToSongs: (String) -> Unit,
     modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -47,7 +48,10 @@ fun HomeScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
         BrowsableItems(
-            listItems = mediaItems ?: mutableListOf()
+            listItems = mediaItems ?: mutableListOf(),
+            navigateToAlbums = navigateToAlbums,
+            navigateToArtists = navigateToArtists,
+            navigateToSongs = navigateToSongs
         )
     }
 }
@@ -55,6 +59,9 @@ fun HomeScreen(
 @Composable
 fun BrowsableItems(
     listItems: List<MediaItemData>,
+    navigateToAlbums: (String) -> Unit,
+    navigateToArtists: (String) -> Unit,
+    navigateToSongs: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -63,8 +70,12 @@ fun BrowsableItems(
     ) {
         items(items = listItems) { item ->
             HomeScreenItem(
+                id = item.mediaId,
                 coverArt = item.coverArt, 
-                title = item.title
+                title = item.title,
+                navigateToAlbums = navigateToAlbums,
+                navigateToArtists = navigateToArtists,
+                navigateToSongs = navigateToSongs
             )
         }
     }
@@ -72,13 +83,30 @@ fun BrowsableItems(
 
 @Composable
 fun HomeScreenItem(
+    id: String,
     coverArt: String,
     title: String,
+    navigateToAlbums: (String) -> Unit,
+    navigateToArtists: (String) -> Unit,
+    navigateToSongs: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.clickable {
+                when (id) {
+                    "ALBUMS" -> {
+                        navigateToAlbums(id)
+                    }
+                    "ARTISTS" -> {
+                        navigateToArtists(id)
+                    }
+                    else -> {
+                        navigateToSongs(id)
+                    }
+                }
+            }
         ) {
             Image(
                 painter = rememberAsyncImagePainter(Uri.parse(coverArt)),
@@ -108,15 +136,17 @@ fun HomeScreenItem(
 @Composable
 fun HomeScreenItemPreview() {
     HomeScreenItem(
+        id = "1",
         coverArt = "android.resource://com.techdroidcentre.musicplayer/drawable/ic_launcher_background",
-        title = "Albums"
+        title = "Albums",
+        {}, {}, {}
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun BrowsableItemsPreview() {
-    BrowsableItems(listItems)
+    BrowsableItems(listItems, {}, {}, {})
 }
 
 val listItems = listOf(

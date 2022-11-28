@@ -16,6 +16,10 @@ import com.techdroidcentre.data.util.METADATA_KEY_ARTIST_ID
 import com.techdroidcentre.data.util.METADATA_KEY_FLAG
 import com.techdroidcentre.player.mappper.toMediaItem
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "MusicService"
@@ -28,14 +32,18 @@ class MusicService: MediaBrowserServiceCompat() {
 
     private var currentPlaylistItems: List<MediaMetadataCompat> = emptyList()
 
+    private val serviceJob = SupervisorJob()
+    private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
+
     @Inject
     lateinit var exoplayer: ExoPlayer
 
     @Inject
     lateinit var musicSource: MusicSource
 
-    @Inject
-    lateinit var browseRoot: BrowseRoot
+    private val browseRoot: BrowseRoot by lazy {
+        BrowseRoot(applicationContext, musicSource)
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -44,6 +52,10 @@ class MusicService: MediaBrowserServiceCompat() {
             isActive = true
         }
         sessionToken = mediaSession.sessionToken
+
+        serviceScope.launch {
+            musicSource.fetchSongs()
+        }
 
         val musicPlaybackPreparer = MusicPlaybackPreparer(musicSource) {mediaMetaData, playWhenReady, parentId ->
             val itemToPlay = mediaMetaData
@@ -62,6 +74,10 @@ class MusicService: MediaBrowserServiceCompat() {
             setPlayer(exoplayer)
             setPlaybackPreparer(musicPlaybackPreparer)
         }
+    }
+
+    override fun onDestroy() {
+        serviceJob.cancel()
     }
 
     private fun buildPlayList(itemToPlay: MediaMetadataCompat, parentId: String?): List<MediaMetadataCompat> {
@@ -87,31 +103,23 @@ class MusicService: MediaBrowserServiceCompat() {
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
         Log.d(TAG, "----- onLoadChildren called -----")
-//        val ready = musicSource.whenReady { success ->
-//            if (success) {
-//                val children = browseRoot.mediaIdToChildren[parentId]?.map {
-//                    MediaBrowserCompat.MediaItem(it.description, it.getLong(METADATA_KEY_FLAG).toInt())
-//                }?.toMutableList()
-//                Log.d(TAG, "----- ${children?.size} -----")
-//                result.sendResult(children)
-//            } else {
-//                result.sendResult(null)
-//            }
-//        }
 
-        val children = browseRoot.mediaIdToChildren[parentId]?.map {
-            MediaBrowserCompat.MediaItem(it.description, it.getLong(METADATA_KEY_FLAG).toInt())
-        }?.toMutableList()
-        children?.also {
-            Log.d(TAG, "----- ${it.size} -----")
-            result.sendResult(it)
-        } ?: run {
-            result.sendResult(null)
+        val ready = musicSource.whenReady { success ->
+            if (success) {
+                val children = browseRoot.mediaIdToChildren[parentId]?.map {
+                    MediaBrowserCompat.MediaItem(it.description, it.getLong(METADATA_KEY_FLAG).toInt())
+                }?.toMutableList()
+                Log.d(TAG, "----- children.size = ${children?.size} -----")
+                result.sendResult(children)
+            } else {
+                result.sendResult(null)
+            }
         }
 
-//        if(!ready) {
-//            result.detach()
-//        }
+        if(!ready) {
+            result.detach()
+        }
+
     }
 
 }

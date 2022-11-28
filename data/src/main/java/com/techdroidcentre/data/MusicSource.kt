@@ -80,8 +80,7 @@ class MusicSource @Inject constructor(
         } ?: run {
         artists = emptyList()
         state = STATE_ERROR
-    }
-
+        }
     }
 }
 

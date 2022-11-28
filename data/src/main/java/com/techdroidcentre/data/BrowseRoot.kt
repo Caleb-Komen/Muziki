@@ -70,14 +70,48 @@ class BrowseRoot @Inject constructor(
             mediaIdToChildren[SONGS_ROOT] = songsChildren
 
             val albumId = mediaMetadata.getLong(METADATA_KEY_ALBUM_ID)
-            val albumChildren = mediaIdToChildren[albumId.toString()] ?: mutableListOf()
+            val albumChildren = mediaIdToChildren[albumId.toString()] ?: buildAlbumRoot(mediaMetadata)
             albumChildren += mediaMetadata
-            mediaIdToChildren[albumId.toString()]
 
             val artistId = mediaMetadata.getLong(METADATA_KEY_ARTIST_ID)
-            val artistChildren = mediaIdToChildren[artistId.toString()] ?: mutableListOf()
+            val artistChildren = mediaIdToChildren[artistId.toString()] ?: buildArtistRoot(mediaMetadata)
             artistChildren += mediaMetadata
-            mediaIdToChildren[artistId.toString()]
+        }
+    }
+
+    private fun buildAlbumRoot(mediaMetadata: MediaMetadataCompat): MutableList<MediaMetadataCompat> {
+        val albumId = mediaMetadata.getLong(METADATA_KEY_ALBUM_ID)
+        val albumMetadata = MediaMetadataCompat.Builder().apply {
+            putString(METADATA_KEY_MEDIA_ID, albumId.toString())
+            putString(METADATA_KEY_TITLE, mediaMetadata.getString(METADATA_KEY_ALBUM))
+            putString(METADATA_KEY_ARTIST, mediaMetadata.getString(METADATA_KEY_ARTIST))
+            putLong(METADATA_KEY_FLAG, FLAG_BROWSABLE.toLong())
+        }.build()
+
+        val albumsRoot = mediaIdToChildren[ALBUMS_ROOT] ?: mutableListOf()
+        albumsRoot += albumMetadata
+        mediaIdToChildren[ALBUMS_ROOT] = albumsRoot
+
+        return mutableListOf<MediaMetadataCompat>().also {
+            mediaIdToChildren[albumId.toString()] = it
+        }
+    }
+
+    private fun buildArtistRoot(mediaMetadata: MediaMetadataCompat): MutableList<MediaMetadataCompat> {
+        val artistId = mediaMetadata.getLong(METADATA_KEY_ARTIST_ID)
+        val artistMetadata = MediaMetadataCompat.Builder().apply {
+            putString(METADATA_KEY_MEDIA_ID, artistId.toString())
+            putString(METADATA_KEY_TITLE, mediaMetadata.getString(METADATA_KEY_ARTIST))
+            putString(METADATA_KEY_ARTIST, mediaMetadata.getString(METADATA_KEY_ARTIST))
+            putLong(METADATA_KEY_FLAG, FLAG_BROWSABLE.toLong())
+        }.build()
+
+        val artistsRoot = mediaIdToChildren[ARTISTS_ROOT] ?: mutableListOf()
+        artistsRoot += artistMetadata
+        mediaIdToChildren[ARTISTS_ROOT] = artistsRoot
+
+        return mutableListOf<MediaMetadataCompat>().also {
+            mediaIdToChildren[artistId.toString()] = it
         }
     }
 
