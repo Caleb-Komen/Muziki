@@ -41,32 +41,6 @@ class MusicSourceTest {
     }
 
     @Test
-    fun fetchAlbums_success() = runTest{
-        musicSource.fetchAlbums()
-        Truth.assertThat(musicSource.albums.size).isAtLeast(1)
-    }
-
-    @Test
-    fun fetchAlbums_error() = runTest{
-        mediaQuery.setNull()
-        musicSource.fetchAlbums()
-        Truth.assertThat(musicSource.albums.size).isEqualTo(0)
-    }
-
-    @Test
-    fun fetchArtists_success() = runTest{
-        musicSource.fetchArtists()
-        Truth.assertThat(musicSource.artists.size).isAtLeast(1)
-    }
-
-    @Test
-    fun fetchArtists_error() = runTest{
-        mediaQuery.setNull()
-        musicSource.fetchArtists()
-        Truth.assertThat(musicSource.artists.size).isEqualTo(0)
-    }
-
-    @Test
     fun whenReady_noWaiting() = runTest{
         waiting = true
         musicSource.fetchSongs()

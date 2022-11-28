@@ -1,4 +1,4 @@
-package com.techdroidcentre.player.mappper
+package com.techdroidcentre.player.mapper
 
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat

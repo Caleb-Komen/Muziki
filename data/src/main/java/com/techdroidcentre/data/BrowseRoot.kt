@@ -52,18 +52,6 @@ class BrowseRoot @Inject constructor(
 
         mediaIdToChildren[BROWSABLE_ROOT] = rootList
 
-        musicSource.albums.forEach { mediaMetadata ->
-            val albumsRoot = mediaIdToChildren[ALBUMS_ROOT] ?: mutableListOf()
-            albumsRoot += mediaMetadata
-            mediaIdToChildren[ALBUMS_ROOT] = albumsRoot
-        }
-
-        musicSource.artists.forEach { mediaMetadata ->
-            val artistsRoot = mediaIdToChildren[ARTISTS_ROOT] ?: mutableListOf()
-            artistsRoot += mediaMetadata
-            mediaIdToChildren[ARTISTS_ROOT] = artistsRoot
-        }
-
         musicSource.songs.forEach { mediaMetadata ->
             val songsChildren = mediaIdToChildren[SONGS_ROOT] ?: mutableListOf()
             songsChildren += mediaMetadata

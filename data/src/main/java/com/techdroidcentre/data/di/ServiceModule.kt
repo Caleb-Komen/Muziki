@@ -18,11 +18,9 @@ object ServiceModule {
     @Provides
     fun provideMediaQuery(
         songsQuery: SongsQuery,
-        albumQuery: AlbumQuery,
-        artistQuery: ArtistQuery,
         @ApplicationContext context: Context
     ): MediaQuery {
-        return MediaQueryImpl(songsQuery, albumQuery, artistQuery, context)
+        return MediaQueryImpl(songsQuery, context)
     }
 
     @ServiceScoped

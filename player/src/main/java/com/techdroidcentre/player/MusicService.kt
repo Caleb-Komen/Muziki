@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.util.Log
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
@@ -14,7 +13,7 @@ import com.techdroidcentre.data.MusicSource
 import com.techdroidcentre.data.util.METADATA_KEY_ALBUM_ID
 import com.techdroidcentre.data.util.METADATA_KEY_ARTIST_ID
 import com.techdroidcentre.data.util.METADATA_KEY_FLAG
-import com.techdroidcentre.player.mappper.toMediaItem
+import com.techdroidcentre.player.mapper.toMediaItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -102,14 +101,11 @@ class MusicService: MediaBrowserServiceCompat() {
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
-        Log.d(TAG, "----- onLoadChildren called -----")
-
         val ready = musicSource.whenReady { success ->
             if (success) {
                 val children = browseRoot.mediaIdToChildren[parentId]?.map {
                     MediaBrowserCompat.MediaItem(it.description, it.getLong(METADATA_KEY_FLAG).toInt())
                 }?.toMutableList()
-                Log.d(TAG, "----- children.size = ${children?.size} -----")
                 result.sendResult(children)
             } else {
                 result.sendResult(null)

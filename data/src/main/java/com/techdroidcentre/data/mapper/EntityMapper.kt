@@ -4,8 +4,6 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.*
 import com.techdroidcentre.data.util.*
-import com.techdroidcentre.domain.models.Album
-import com.techdroidcentre.domain.models.Artist
 import com.techdroidcentre.domain.models.Song
 
 fun Song.toMediaMetadataCompat(): MediaMetadataCompat {
@@ -24,26 +22,5 @@ fun Song.toMediaMetadataCompat(): MediaMetadataCompat {
         putLong(METADATA_KEY_DURATION, duration)
         putLong(METADATA_KEY_SIZE, size.toLong())
         putLong(METADATA_KEY_FLAG, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE.toLong())
-    }.build()
-}
-
-fun Album.toMediaMetadataCompat(): MediaMetadataCompat {
-    return MediaMetadataCompat.Builder().apply {
-        putString(METADATA_KEY_MEDIA_ID, id.toString())
-        putString(METADATA_KEY_TITLE, name)
-        putString(METADATA_KEY_ARTIST, artist)
-        putString(METADATA_KEY_MEDIA_URI, uri)
-        putLong(METADATA_KEY_NUM_TRACKS, numOfSongs.toLong())
-        putLong(METADATA_KEY_FLAG, MediaBrowserCompat.MediaItem.FLAG_BROWSABLE.toLong())
-    }.build()
-}
-
-fun Artist.toMediaMetadataCompat(): MediaMetadataCompat {
-    return MediaMetadataCompat.Builder().apply {
-        putString(METADATA_KEY_MEDIA_ID, id.toString())
-        putString(METADATA_KEY_MEDIA_URI, uri)
-        putString(METADATA_KEY_TITLE, name)
-        putLong(METADATA_KEY_NUM_TRACKS, numOfSongs.toLong())
-        putLong(METADATA_KEY_FLAG, MediaBrowserCompat.MediaItem.FLAG_BROWSABLE.toLong())
     }.build()
 }

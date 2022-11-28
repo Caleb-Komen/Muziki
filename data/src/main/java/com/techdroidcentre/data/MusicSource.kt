@@ -13,8 +13,6 @@ class MusicSource @Inject constructor(
     private val dispatcher: CoroutineDispatcher
 ) {
     var songs = emptyList<MediaMetadataCompat>()
-    var albums = emptyList<MediaMetadataCompat>()
-    var artists = emptyList<MediaMetadataCompat>()
 
     private val onReadyListeners = mutableListOf<(Boolean) -> Unit>()
 
@@ -53,33 +51,6 @@ class MusicSource @Inject constructor(
         } ?: run {
             songs = emptyList()
             state = STATE_ERROR
-        }
-    }
-
-    suspend fun fetchAlbums() = withContext(dispatcher) {
-        state = STATE_INITIALISING
-        mediaQuery.getAllAlbums()?.let {
-            albums = it.map { album ->
-                album.toMediaMetadataCompat()
-            }
-            state = STATE_INITIALISED
-        } ?: run {
-            albums = emptyList()
-            state = STATE_ERROR
-        }
-    }
-
-    suspend fun fetchArtists() = withContext(dispatcher) {
-        state = STATE_INITIALISING
-        mediaQuery.getAllArtists()?.let {
-            artists = it.map {artist ->
-                artist.toMediaMetadataCompat()
-
-            }
-            state = STATE_INITIALISED
-        } ?: run {
-        artists = emptyList()
-        state = STATE_ERROR
         }
     }
 }
