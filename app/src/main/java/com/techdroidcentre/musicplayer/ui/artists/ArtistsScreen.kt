@@ -18,6 +18,7 @@ import com.techdroidcentre.musicplayer.ui.components.AlbumArtistItem
 @Composable
 fun ArtistsScreen(
     modifier: Modifier = Modifier,
+    navigateToSongs: (String) -> Unit,
     viewModel: ArtistsViewModel = hiltViewModel()
 ) {
     viewModel.mediaId.observe(LocalLifecycleOwner.current) {
@@ -27,6 +28,7 @@ fun ArtistsScreen(
     val artists by viewModel.artists.observeAsState()
     ArtistsCollection(
         artists = artists ?: mutableListOf(),
+        navigateToSongs = navigateToSongs,
         modifier = modifier
     )
 }
@@ -34,6 +36,7 @@ fun ArtistsScreen(
 @Composable
 fun ArtistsCollection(
     artists: List<MediaItemData>,
+    navigateToSongs: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
@@ -46,7 +49,8 @@ fun ArtistsCollection(
             AlbumArtistItem(
                 id = artist.mediaId,
                 title = artist.title,
-                subtitle = artist.subtitle
+                subtitle = artist.subtitle,
+                navigateToSongs = navigateToSongs
             )
         }
     }

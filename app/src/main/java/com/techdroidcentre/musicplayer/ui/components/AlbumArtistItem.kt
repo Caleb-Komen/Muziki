@@ -2,6 +2,7 @@ package com.techdroidcentre.musicplayer.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -15,16 +16,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.techdroidcentre.musicplayer.R
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AlbumArtistItem(
     id: String,
     title: String,
     subtitle: String,
+    navigateToSongs: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
         modifier = modifier.width(150.dp),
-        shape = MaterialTheme.shapes.small
+        shape = MaterialTheme.shapes.small,
+        onClick = {
+            navigateToSongs(id)
+        }
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()

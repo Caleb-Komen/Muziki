@@ -41,7 +41,11 @@ fun MusicNavGraph(navController: NavHostController) {
                 }
             )
         ) {
-            AlbumsScreen()
+            AlbumsScreen(
+                navigateToSongs = {
+                    navController.navigate(Screen.SongsScreen.passId(it))
+                }
+            )
         }
 
         composable(
@@ -52,7 +56,11 @@ fun MusicNavGraph(navController: NavHostController) {
                 }
             )
         ) {
-            ArtistsScreen()
+            ArtistsScreen(
+                navigateToSongs = {
+                    navController.navigate(Screen.SongsScreen.passId(it))
+                }
+            )
         }
 
         composable(
