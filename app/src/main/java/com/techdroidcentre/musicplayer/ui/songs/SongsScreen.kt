@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -35,6 +36,7 @@ fun SongsScreen(
     val songs by viewModel.songs.observeAsState()
     SongsCollection(
         songs = songs ?: mutableListOf(),
+        playSong = viewModel::playSong,
         modifier = modifier
     )
 }
@@ -42,6 +44,7 @@ fun SongsScreen(
 @Composable
 fun SongsCollection(
     songs: List<MediaItemData>,
+    playSong: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -53,23 +56,29 @@ fun SongsCollection(
                 id = song.mediaId,
                 title = song.title,
                 artist = song.subtitle,
-                album = song.description
+                album = song.description,
+                playSong = playSong
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SongItem(
     id: String,
     title: String,
     artist: String,
     album: String,
+    playSong: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.small
+        shape = MaterialTheme.shapes.small,
+        onClick = {
+            playSong(id)
+        }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -105,6 +114,6 @@ fun SongItem(
 @Composable
 fun SongItemPreview() {
     MusicPlayerTheme {
-        SongItem("id","Title", "Artist", "Album")
+        SongItem("id","Title", "Artist", "Album", {})
     }
 }

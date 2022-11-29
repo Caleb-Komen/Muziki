@@ -56,11 +56,12 @@ class MusicService: MediaBrowserServiceCompat() {
             musicSource.fetchSongs()
         }
 
-        val musicPlaybackPreparer = MusicPlaybackPreparer(musicSource) {mediaMetaData, playWhenReady, parentId ->
-            val itemToPlay = mediaMetaData
-            val mediaMetaDataList = buildPlayList(itemToPlay, parentId)
+        val musicPlaybackPreparer = MusicPlaybackPreparer(musicSource) { mediaMetaData, playWhenReady, parentId ->
+            val mediaMetaDataList = buildPlayList(mediaMetaData, parentId)
             currentPlaylistItems = mediaMetaDataList
-            val currentItemIndex = if (musicSource.songs.indexOf(itemToPlay) == -1) 0 else musicSource.songs.indexOf(itemToPlay)
+            val currentItemIndex = if (musicSource.songs.indexOf(mediaMetaData) == -1) 0 else musicSource.songs.indexOf(
+                mediaMetaData
+            )
             val playbackPosition = 0L
             exoplayer.playWhenReady = playWhenReady
             exoplayer.setMediaItems(mediaMetaDataList.map { it.toMediaItem() })
@@ -83,8 +84,13 @@ class MusicService: MediaBrowserServiceCompat() {
         val albumId = itemToPlay.getLong(METADATA_KEY_ALBUM_ID).toString()
         val artistId = itemToPlay.getLong(METADATA_KEY_ARTIST_ID).toString()
         return when (parentId) {
-            albumId -> musicSource.songs.filter { albumId == parentId }
-            artistId -> musicSource.songs.filter { artistId == parentId }
+            albumId -> musicSource.songs.filter {
+                it.getLong(METADATA_KEY_ALBUM_ID).toString() == parentId
+
+            }
+            artistId -> musicSource.songs.filter {
+                it.getLong(METADATA_KEY_ARTIST_ID).toString() == parentId
+            }
             else -> musicSource.songs
         }
     }
