@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.navigation.compose.rememberNavController
 import com.techdroidcentre.musicplayer.ui.theme.MusicPlayerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,8 +21,7 @@ class MainActivity : ComponentActivity() {
             }.launch(READ_EXTERNAL_STORAGE)
             setContent {
                 MusicPlayerTheme {
-                    val navController = rememberNavController()
-                    MusicNavGraph(navController = navController)
+                    MainApp()
                 }
             }
         }

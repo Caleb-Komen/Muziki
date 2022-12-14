@@ -59,9 +59,7 @@ class MusicService: MediaBrowserServiceCompat() {
         val musicPlaybackPreparer = MusicPlaybackPreparer(musicSource) { mediaMetaData, playWhenReady, parentId ->
             val mediaMetaDataList = buildPlayList(mediaMetaData, parentId)
             currentPlaylistItems = mediaMetaDataList
-            val currentItemIndex = if (musicSource.songs.indexOf(mediaMetaData) == -1) 0 else musicSource.songs.indexOf(
-                mediaMetaData
-            )
+            val currentItemIndex = if (mediaMetaData == null) 0 else mediaMetaDataList.indexOf(mediaMetaData)
             val playbackPosition = 0L
             exoplayer.playWhenReady = playWhenReady
             exoplayer.setMediaItems(mediaMetaDataList.map { it.toMediaItem() })
@@ -70,10 +68,9 @@ class MusicService: MediaBrowserServiceCompat() {
         }
 
         mediaSessionConnector = MediaSessionConnector(mediaSession)
-        mediaSessionConnector.apply {
-            setPlayer(exoplayer)
-            setPlaybackPreparer(musicPlaybackPreparer)
-        }
+        mediaSessionConnector.setPlaybackPreparer(musicPlaybackPreparer)
+        mediaSessionConnector.setQueueNavigator(MusicQueueNavigator(mediaSession, currentPlaylistItems))
+        mediaSessionConnector.setPlayer(exoplayer)
     }
 
     override fun onDestroy() {
@@ -121,7 +118,5 @@ class MusicService: MediaBrowserServiceCompat() {
         if(!ready) {
             result.detach()
         }
-
     }
-
 }

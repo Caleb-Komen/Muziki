@@ -3,10 +3,9 @@ package com.techdroidcentre.musicplayer.util
 import android.content.ComponentName
 import android.content.Context
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import androidx.activity.ComponentActivity
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -25,6 +24,8 @@ class MusicServiceConnection @Inject constructor(
         get() = mediaController.transportControls
 
     val playbackState =  MutableLiveData<PlaybackStateCompat>()
+
+    val mediaMetadata =  MutableLiveData<MediaMetadataCompat>()
 
     val mediaBrowser = MediaBrowserCompat(
         context,
@@ -65,7 +66,12 @@ class MusicServiceConnection @Inject constructor(
     val mediaControllerCallback = object : MediaControllerCompat.Callback() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
             super.onPlaybackStateChanged(state)
-            playbackState.value = state
+            playbackState.postValue(state)
+        }
+
+        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
+            super.onMetadataChanged(metadata)
+            mediaMetadata.postValue(metadata)
         }
     }
 }
