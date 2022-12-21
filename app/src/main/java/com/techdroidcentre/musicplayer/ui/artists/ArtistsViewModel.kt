@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.techdroidcentre.musicplayer.model.ArtistData
-import com.techdroidcentre.musicplayer.model.MediaItemData
 import com.techdroidcentre.musicplayer.ui.MEDIA_ID_KEY
 import com.techdroidcentre.musicplayer.util.MusicServiceConnection
 import dagger.hilt.android.lifecycle.HiltViewModel

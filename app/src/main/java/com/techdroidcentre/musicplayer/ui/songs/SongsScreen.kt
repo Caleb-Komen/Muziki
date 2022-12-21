@@ -1,7 +1,6 @@
 package com.techdroidcentre.musicplayer.ui.songs
 
 import android.graphics.Bitmap
-import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
