@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class SongsQuery @Inject constructor(
@@ -21,12 +22,15 @@ class SongsQuery @Inject constructor(
         MediaStore.Audio.Media.SIZE
     )
 
+    private val selection = "${MediaStore.Audio.Media.DURATION} >= ?"
+    private val selectionArgs = arrayOf(TimeUnit.MILLISECONDS.convert(10, TimeUnit.SECONDS).toString())
+
     fun getSongsCursor(): Cursor? {
         return context.contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             projection,
-            null,
-            null,
+            selection,
+            selectionArgs,
             MediaStore.Audio.Media.DEFAULT_SORT_ORDER
         )
     }
