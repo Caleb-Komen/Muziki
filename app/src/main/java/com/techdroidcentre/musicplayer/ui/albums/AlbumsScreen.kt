@@ -98,7 +98,7 @@ fun AlbumItem(
             modifier = Modifier.fillMaxWidth()
         ) {
             Image(
-                painter = if (thumbnail == null) painterResource(id = R.drawable.musica) else rememberAsyncImagePainter(model = coverArt),
+                painter = if (thumbnail == null) painterResource(id = com.techdroidcentre.data.R.drawable.ic_baseline_album_24) else rememberAsyncImagePainter(model = coverArt),
                 contentDescription = null,
                 modifier = Modifier
                     .height(150.dp)

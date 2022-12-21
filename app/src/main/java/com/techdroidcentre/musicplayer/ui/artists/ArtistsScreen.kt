@@ -90,7 +90,7 @@ fun ArtistItem(
             modifier = Modifier.fillMaxWidth()
         ) {
             Image(
-                painter = if (coverArt == null) painterResource(id = R.drawable.musica) else rememberAsyncImagePainter(model = coverArt),
+                painter = if (coverArt == null) painterResource(id = com.techdroidcentre.data.R.drawable.ic_account_music) else rememberAsyncImagePainter(model = coverArt),
                 contentDescription = null,
                 modifier = Modifier
                     .height(150.dp)

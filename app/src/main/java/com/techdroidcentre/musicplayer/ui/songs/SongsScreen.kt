@@ -88,7 +88,7 @@ fun SongItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = if (coverArt != null) rememberAsyncImagePainter(model = coverArt) else painterResource(id = R.drawable.ic_launcher_background),
+                painter = if (coverArt != null) rememberAsyncImagePainter(model = coverArt) else painterResource(id = com.techdroidcentre.data.R.drawable.ic_baseline_music_note_24),
                 contentDescription = null,
                 modifier = Modifier
                     .size(56.dp)
