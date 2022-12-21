@@ -12,8 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.techdroidcentre.musicplayer.model.ArtistData
 import com.techdroidcentre.musicplayer.model.MediaItemData
 import com.techdroidcentre.musicplayer.ui.components.AlbumArtistItem
+import com.techdroidcentre.musicplayer.ui.components.ArtistItem
 
 @Composable
 fun ArtistsScreen(
@@ -35,7 +37,7 @@ fun ArtistsScreen(
 
 @Composable
 fun ArtistsCollection(
-    artists: List<MediaItemData>,
+    artists: List<ArtistData>,
     navigateToSongs: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -46,10 +48,11 @@ fun ArtistsCollection(
         modifier = modifier.padding(8.dp)
     ) {
         items(items = artists) { artist ->
-            AlbumArtistItem(
+            ArtistItem(
                 id = artist.mediaId,
                 title = artist.title,
                 subtitle = artist.subtitle,
+                coverArt = artist.coverArt,
                 navigateToSongs = navigateToSongs
             )
         }

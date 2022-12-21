@@ -16,14 +16,17 @@ class MainActivity : ComponentActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
-                if (!isGranted)
+                if (!isGranted) {
                     Log.d("MainActivity", "onCreate: Permission denied")
-            }.launch(READ_EXTERNAL_STORAGE)
-            setContent {
-                MusicPlayerTheme {
-                    MainApp()
+                } else {
+                    setContent {
+                        MusicPlayerTheme {
+                            MainApp()
+                        }
+                    }
                 }
-            }
+            }.launch(READ_EXTERNAL_STORAGE)
+
         }
 
         override fun onResume() {

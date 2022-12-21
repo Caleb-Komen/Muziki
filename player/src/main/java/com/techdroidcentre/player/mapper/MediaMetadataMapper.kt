@@ -21,6 +21,7 @@ fun MediaMetadataCompat.toMediaItemMetaData(): com.google.android.exoplayer2.Med
         putLong(METADATA_KEY_DURATION, getLong(METADATA_KEY_DURATION))
         putString(METADATA_KEY_PATH, getString(METADATA_KEY_PATH))
         putInt(METADATA_KEY_SIZE, getLong(METADATA_KEY_SIZE).toInt())
+        putParcelable(METADATA_KEY_ART, getBitmap(METADATA_KEY_ART))
     }
     return com.google.android.exoplayer2.MediaMetadata.Builder()
         .setTitle(getString(METADATA_KEY_TITLE))

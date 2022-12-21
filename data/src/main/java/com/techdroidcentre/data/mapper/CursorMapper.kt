@@ -3,6 +3,7 @@ package com.techdroidcentre.data.mapper
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.os.Build
 import android.provider.MediaStore
 import com.techdroidcentre.data.R
 import com.techdroidcentre.domain.models.Song
@@ -35,6 +36,7 @@ fun Cursor.toSong(
 
     val album = if (albumName == MediaStore.UNKNOWN_STRING) context.getString(R.string.unknown_album_title) else albumName
     val artist = if (artistName == MediaStore.UNKNOWN_STRING) context.getString(R.string.unknown_artist_title) else artistName
+    val coverArt = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) uri else path
 
     return Song(
         id = id,
@@ -46,7 +48,8 @@ fun Cursor.toSong(
         album = album,
         path = path,
         duration = duration,
-        size = size
+        size = size,
+        coverArt = coverArt
     )
 }
 

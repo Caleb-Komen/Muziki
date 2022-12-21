@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.techdroidcentre.musicplayer.model.ArtistData
 import com.techdroidcentre.musicplayer.model.MediaItemData
 import com.techdroidcentre.musicplayer.ui.MEDIA_ID_KEY
 import com.techdroidcentre.musicplayer.util.MusicServiceConnection
@@ -17,8 +18,8 @@ class ArtistsViewModel @Inject constructor(
     private val musicServiceConnection: MusicServiceConnection,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    private val _artists = MutableLiveData<List<MediaItemData>>()
-    val artists: LiveData<List<MediaItemData>> = _artists
+    private val _artists = MutableLiveData<List<ArtistData>>()
+    val artists: LiveData<List<ArtistData>> = _artists
 
     private val _mediaId = savedStateHandle.getLiveData<String>(MEDIA_ID_KEY)
     val mediaId: LiveData<String> = _mediaId
@@ -29,13 +30,13 @@ class ArtistsViewModel @Inject constructor(
             children: MutableList<MediaBrowserCompat.MediaItem>
         ) {
             val artistItems = children.map {
-                MediaItemData(
+                ArtistData(
                     mediaId = it.mediaId!!,
                     title = it.description.title.toString(),
                     subtitle = it.description.subtitle.toString(),
                     description = it.description.description.toString(),
                     browsable = it.isBrowsable,
-                    coverArt = it.description.iconUri.toString()
+                    coverArt = it.description.iconBitmap
                 )
             }
             _artists.value = artistItems

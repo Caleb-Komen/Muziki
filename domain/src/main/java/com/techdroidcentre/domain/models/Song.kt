@@ -10,5 +10,6 @@ data class Song(
     val album: String,
     val path: String,
     val duration: Long,
-    val size: Int
+    val size: Int,
+    val coverArt: String
 )

@@ -1,6 +1,10 @@
 package com.techdroidcentre.data
 
+import android.content.ContentUris
 import android.content.Context
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.*
@@ -69,10 +73,15 @@ class BrowseRoot @Inject constructor(
 
     private fun buildAlbumRoot(mediaMetadata: MediaMetadataCompat): MutableList<MediaMetadataCompat> {
         val albumId = mediaMetadata.getLong(METADATA_KEY_ALBUM_ID)
+        val artUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            // use this album item uri to load album art on android Q and later
+            ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, albumId)
+        else ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId)
         val albumMetadata = MediaMetadataCompat.Builder().apply {
             putString(METADATA_KEY_MEDIA_ID, albumId.toString())
             putString(METADATA_KEY_TITLE, mediaMetadata.getString(METADATA_KEY_ALBUM))
             putString(METADATA_KEY_ARTIST, mediaMetadata.getString(METADATA_KEY_ARTIST))
+            putString(METADATA_KEY_ART_URI, artUri.toString())
             putLong(METADATA_KEY_FLAG, FLAG_BROWSABLE.toLong())
         }.build()
 
@@ -91,6 +100,8 @@ class BrowseRoot @Inject constructor(
             putString(METADATA_KEY_MEDIA_ID, artistId.toString())
             putString(METADATA_KEY_TITLE, mediaMetadata.getString(METADATA_KEY_ARTIST))
             putString(METADATA_KEY_ARTIST, mediaMetadata.getString(METADATA_KEY_ARTIST))
+            // use this media's art as artist cover-art
+            putBitmap(METADATA_KEY_ART, mediaMetadata.getBitmap(METADATA_KEY_ART))
             putLong(METADATA_KEY_FLAG, FLAG_BROWSABLE.toLong())
         }.build()
 

@@ -51,6 +51,7 @@ fun AlbumsCollection(
                 id = album.mediaId,
                 title = album.title,
                 subtitle = album.subtitle,
+                coverArt = album.coverArt,
                 navigateToSongs = navigateToSongs
             )
         }

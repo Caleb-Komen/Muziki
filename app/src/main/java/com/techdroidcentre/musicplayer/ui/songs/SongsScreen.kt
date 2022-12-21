@@ -1,5 +1,7 @@
 package com.techdroidcentre.musicplayer.ui.songs
 
+import android.graphics.Bitmap
+import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,8 +22,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.techdroidcentre.musicplayer.R
-import com.techdroidcentre.musicplayer.model.MediaItemData
+import com.techdroidcentre.musicplayer.model.SongData
 import com.techdroidcentre.musicplayer.ui.theme.MusicPlayerTheme
 
 @Composable
@@ -43,7 +46,7 @@ fun SongsScreen(
 
 @Composable
 fun SongsCollection(
-    songs: List<MediaItemData>,
+    songs: List<SongData>,
     playSong: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -57,6 +60,7 @@ fun SongsCollection(
                 title = song.title,
                 artist = song.subtitle,
                 album = song.description,
+                coverArt = song.coverArt,
                 playSong = playSong
             )
         }
@@ -70,6 +74,7 @@ fun SongItem(
     title: String,
     artist: String,
     album: String,
+    coverArt: Bitmap?,
     playSong: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -84,7 +89,7 @@ fun SongItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
+                painter = if (coverArt != null) rememberAsyncImagePainter(model = coverArt) else painterResource(id = R.drawable.ic_launcher_background),
                 contentDescription = null,
                 modifier = Modifier
                     .size(56.dp)
@@ -114,6 +119,6 @@ fun SongItem(
 @Composable
 fun SongItemPreview() {
     MusicPlayerTheme {
-        SongItem("id","Title", "Artist", "Album", {})
+        SongItem("id","Title", "Artist", "Album", null, {})
     }
 }
