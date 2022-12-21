@@ -1,6 +1,7 @@
 package com.techdroidcentre.musicplayer.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -12,10 +13,11 @@ import com.techdroidcentre.musicplayer.ui.home.HomeScreen
 import com.techdroidcentre.musicplayer.ui.songs.SongsScreen
 
 @Composable
-fun MusicNavGraph(navController: NavHostController) {
+fun MusicNavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(
         navController = navController,
-        startDestination = Screen.HomeScreen.route
+        startDestination = Screen.HomeScreen.route,
+        modifier = modifier
     ) {
         composable(
             route = Screen.HomeScreen.route

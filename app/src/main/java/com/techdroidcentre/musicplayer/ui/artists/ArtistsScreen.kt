@@ -19,11 +19,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
-import com.techdroidcentre.musicplayer.R
 import com.techdroidcentre.musicplayer.model.ArtistData
 
 @Composable
@@ -50,20 +50,28 @@ fun ArtistsCollection(
     navigateToSongs: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(128.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = modifier.padding(8.dp)
-    ) {
-        items(items = artists) { artist ->
-            ArtistItem(
-                id = artist.mediaId,
-                title = artist.title,
-                subtitle = artist.subtitle,
-                coverArt = artist.coverArt,
-                navigateToSongs = navigateToSongs
-            )
+    Column(modifier = modifier) {
+        Text(
+            text = "Artists",
+            style = MaterialTheme.typography.h4,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(128.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(8.dp)
+        ) {
+            items(items = artists) { artist ->
+                ArtistItem(
+                    id = artist.mediaId,
+                    title = artist.title,
+                    subtitle = artist.subtitle,
+                    coverArt = artist.coverArt,
+                    navigateToSongs = navigateToSongs
+                )
+            }
         }
     }
 }

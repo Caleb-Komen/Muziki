@@ -45,7 +45,7 @@ fun MainApp() {
             } else {
                 -sheetState.offset.value / dragRange
             }.coerceIn(0f, 1f)
-            MusicNavGraph(navController = navController)
+            MusicNavGraph(navController = navController, modifier = Modifier.padding(bottom = closedSheetHeight))
             NowPlayingSheet(
                 openFraction = openFraction,
                 height = this@BoxWithConstraints.constraints.maxHeight.toFloat()

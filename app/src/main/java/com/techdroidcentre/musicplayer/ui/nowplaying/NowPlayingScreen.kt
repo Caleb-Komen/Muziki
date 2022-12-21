@@ -69,12 +69,12 @@ fun NowPlayingScreen(
     }
 
     Box(modifier = Modifier.fillMaxWidth()) {
-        val lessonsAlpha = lerp(0f, 1f, 0.2f, 0.8f, openFraction)
+        val openAlpha = lerp(0f, 1f, 0.2f, 0.8f, openFraction)
         Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(8.dp)
-                .graphicsLayer { alpha = lessonsAlpha }
+                .graphicsLayer { alpha = openAlpha }
         ) {
             PlaybackMetaData(
                 title = title,
@@ -90,11 +90,11 @@ fun NowPlayingScreen(
             )
         }
 
-        val fabAlpha = lerp(1f, 0f, 0f, 0.15f, openFraction)
+        val collapsedAlpha = lerp(1f, 0f, 0f, 0.15f, openFraction)
         Box(
             modifier = Modifier.fillMaxWidth()
                 .height(closedSheetHeight)
-                .graphicsLayer { alpha = fabAlpha }
+                .graphicsLayer { alpha = collapsedAlpha }
         ) {
             NowPlayingClosedSheet(
                 title = title,

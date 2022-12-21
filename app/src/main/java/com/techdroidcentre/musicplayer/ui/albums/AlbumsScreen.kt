@@ -25,12 +25,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
-import com.techdroidcentre.musicplayer.R
 import com.techdroidcentre.musicplayer.model.MediaItemData
 
 @Composable
@@ -57,20 +57,28 @@ fun AlbumsCollection(
     navigateToSongs: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(128.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = modifier.padding(8.dp)
-    ) {
-        items(items = albums) { album ->
-            AlbumItem(
-                id = album.mediaId,
-                title = album.title,
-                subtitle = album.subtitle,
-                coverArt = album.coverArt,
-                navigateToSongs = navigateToSongs
-            )
+    Column {
+        Text(
+            text = "Albums",
+            style = MaterialTheme.typography.h4,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(128.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = modifier.padding(8.dp)
+        ) {
+            items(items = albums) { album ->
+                AlbumItem(
+                    id = album.mediaId,
+                    title = album.title,
+                    subtitle = album.subtitle,
+                    coverArt = album.coverArt,
+                    navigateToSongs = navigateToSongs
+                )
+            }
         }
     }
 }

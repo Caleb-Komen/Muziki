@@ -5,24 +5,22 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
-import com.techdroidcentre.musicplayer.R
 import com.techdroidcentre.musicplayer.model.SongData
 import com.techdroidcentre.musicplayer.ui.theme.MusicPlayerTheme
 
@@ -53,6 +51,14 @@ fun SongsCollection(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier.padding(8.dp)
     ) {
+        item {
+            Text(
+                text = "Songs",
+                style = MaterialTheme.typography.h4,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
         items(items = songs) { song ->
             SongItem(
                 id = song.mediaId,
@@ -82,34 +88,38 @@ fun SongItem(
         shape = MaterialTheme.shapes.small,
         onClick = {
             playSong(id)
-        }
+        },
+        color = Color.Transparent
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = if (coverArt != null) rememberAsyncImagePainter(model = coverArt) else painterResource(id = com.techdroidcentre.data.R.drawable.ic_baseline_music_note_24),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(shape = MaterialTheme.shapes.small)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.caption,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+        Column {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = if (coverArt != null) rememberAsyncImagePainter(model = coverArt) else painterResource(id = com.techdroidcentre.data.R.drawable.ic_baseline_music_note_24),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(shape = MaterialTheme.shapes.small)
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "$artist - $album",
-                    style = MaterialTheme.typography.overline,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Column {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.caption,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "$artist - $album",
+                        style = MaterialTheme.typography.overline,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
+            Divider()
         }
     }
 }
