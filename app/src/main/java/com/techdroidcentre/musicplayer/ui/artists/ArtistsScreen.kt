@@ -50,7 +50,7 @@ fun ArtistsCollection(
     navigateToSongs: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
+    Column(modifier = modifier.padding(8.dp)) {
         Text(
             text = "Artists",
             style = MaterialTheme.typography.h4,
@@ -61,7 +61,7 @@ fun ArtistsCollection(
             columns = GridCells.Adaptive(128.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.fillMaxSize()
         ) {
             items(items = artists) { artist ->
                 ArtistItem(

@@ -50,6 +50,7 @@ fun SongsCollection(
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier.padding(8.dp)
+            .fillMaxSize()
     ) {
         item {
             Text(
@@ -119,6 +120,7 @@ fun SongItem(
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(4.dp))
             Divider()
         }
     }

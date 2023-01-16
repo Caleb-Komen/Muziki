@@ -66,7 +66,7 @@ fun BrowsableItems(
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier
+        modifier = modifier.fillMaxSize()
     ) {
         items(items = listItems) { item ->
             HomeScreenItem(
