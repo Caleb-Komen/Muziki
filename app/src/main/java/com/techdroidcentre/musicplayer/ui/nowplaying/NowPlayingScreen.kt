@@ -1,8 +1,5 @@
 package com.techdroidcentre.musicplayer.ui.nowplaying
 
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
-import android.support.v4.media.session.PlaybackStateCompat
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,13 +14,17 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.techdroidcentre.musicplayer.R
+import com.techdroidcentre.musicplayer.model.NowPlayingMetadata
 import com.techdroidcentre.musicplayer.ui.theme.MusicPlayerTheme
 import com.techdroidcentre.musicplayer.util.lerp
+import kotlin.math.floor
 
 val closedSheetHeight = 56.dp
 
@@ -53,20 +54,9 @@ fun NowPlayingScreen(
     modifier: Modifier = Modifier,
     viewModel: NowPlayingViewModel = hiltViewModel()
 ) {
-    val playbackState by viewModel.playbackState.observeAsState()
-    val metadata by viewModel.metadata.observeAsState()
-
-    val isPlaying = playbackState?.state == PlaybackStateCompat.STATE_PLAYING
-    val title: String
-    val subtitle: String
-
-    if (metadata == null) {
-        title = "Not Playing"
-        subtitle = ""
-    } else {
-        title = metadata?.getString(METADATA_KEY_TITLE) ?: "Unknown"
-        subtitle = metadata?.getString(METADATA_KEY_ARTIST) ?: "Unknown"
-    }
+    val isPlaying by viewModel.isPlaying.observeAsState()
+    val nowPlayingMetadata by viewModel.mediaMetadata.observeAsState()
+    val mediaPosition by viewModel.mediaPosition.observeAsState()
 
     Box(modifier = Modifier.fillMaxWidth()) {
         val openAlpha = lerp(0f, 1f, 0.2f, 0.8f, openFraction)
@@ -77,12 +67,13 @@ fun NowPlayingScreen(
                 .graphicsLayer { alpha = openAlpha }
         ) {
             PlaybackMetaData(
-                title = title,
-                subtitle = subtitle,
+                nowPlayingMetadata = nowPlayingMetadata!!,
+                mediaPosition = mediaPosition!!,
+                onValueChange = viewModel::seekTo,
                 modifier = Modifier.weight(7f)
             )
             PlaybackControls(
-                isPlaying = isPlaying,
+                isPlaying = isPlaying!!,
                 playOrPause = viewModel::playOrPause,
                 skipToNext = viewModel::skipToNext,
                 skipToPrevious = viewModel::skipToPrevious,
@@ -92,13 +83,14 @@ fun NowPlayingScreen(
 
         val collapsedAlpha = lerp(1f, 0f, 0f, 0.15f, openFraction)
         Box(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .height(closedSheetHeight)
                 .graphicsLayer { alpha = collapsedAlpha }
         ) {
             NowPlayingClosedSheet(
-                title = title,
-                isPlaying = isPlaying,
+                title = nowPlayingMetadata!!.title,
+                isPlaying = isPlaying!!,
                 playOrPause = viewModel::playOrPause
             )
         }
@@ -107,8 +99,9 @@ fun NowPlayingScreen(
 
 @Composable
 fun PlaybackMetaData(
-    title: String,
-    subtitle: String,
+    nowPlayingMetadata: NowPlayingMetadata,
+    mediaPosition: Long,
+    onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -117,7 +110,8 @@ fun PlaybackMetaData(
         modifier = modifier.fillMaxWidth()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.musica),
+            painter = if (nowPlayingMetadata.albumArt != null) rememberAsyncImagePainter(model = nowPlayingMetadata.albumArt)
+            else painterResource(id = com.techdroidcentre.data.R.drawable.ic_baseline_music_note_24),
             contentDescription = null,
             modifier = Modifier
                 .size(250.dp)
@@ -125,40 +119,42 @@ fun PlaybackMetaData(
             contentScale = ContentScale.Crop
         )
         Text(
-            text = title,
+            text = nowPlayingMetadata.title,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.h5
         )
         Text(
-            text = subtitle,
+            text = nowPlayingMetadata.subtitle,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.body1
         )
-        PlaybackPositionIndicator("0:00", "3:46")
+        PlaybackPositionIndicator(mediaPosition, nowPlayingMetadata.duration, onValueChange = onValueChange)
     }
 }
 
 @Composable
 fun PlaybackPositionIndicator(
-    position: String,
-    duration: String,
+    position: Long,
+    duration: Long,
+    onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
-        LinearProgressIndicator(
-            progress = 0.5f,
-            modifier = Modifier.fillMaxWidth()
+        Slider(
+            value = position.toFloat(),
+            onValueChange = onValueChange,
+            valueRange = 0f..duration.toFloat()
         )
         Spacer(modifier = Modifier.height(8.dp))
         Box( modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = position,
+                text = toDurationString(position),
                 modifier = Modifier.align(Alignment.BottomStart)
             )
             Text(
-                text = duration,
+                text = toDurationString(duration),
                 modifier = Modifier.align(Alignment.BottomEnd)
             )
         }
@@ -237,12 +233,14 @@ fun NowPlayingClosedSheet(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.h5,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
                     .padding(horizontal = 8.dp)
             )
             IconButton(
                 onClick = playOrPause,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier
+                    .size(48.dp)
                     .padding(horizontal = 8.dp)
             ) {
                 if (isPlaying) {
@@ -261,6 +259,14 @@ fun NowPlayingClosedSheet(
             }
         }
     }
+}
+// format duration to minutes and seconds
+@Composable
+private fun toDurationString(duration: Long): String {
+    val totalSeconds = floor(duration / 1E3).toInt()
+    val minutes = totalSeconds / 60
+    val remainingSeconds = totalSeconds - (minutes * 60)
+    return stringResource(R.string.duration_format, minutes, remainingSeconds)
 }
 
 @Preview(showBackground = true)

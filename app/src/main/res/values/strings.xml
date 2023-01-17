@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MusicPlayer</string>
+    <string name="duration_format">%d:%02d</string>
 </resources>

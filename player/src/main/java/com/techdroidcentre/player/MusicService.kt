@@ -2,11 +2,14 @@ package com.techdroidcentre.player
 
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
+import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.techdroidcentre.data.BROWSABLE_ROOT
 import com.techdroidcentre.data.BrowseRoot
 import com.techdroidcentre.data.MusicSource
@@ -69,7 +72,7 @@ class MusicService: MediaBrowserServiceCompat() {
 
         mediaSessionConnector = MediaSessionConnector(mediaSession)
         mediaSessionConnector.setPlaybackPreparer(musicPlaybackPreparer)
-        mediaSessionConnector.setQueueNavigator(MusicQueueNavigator(mediaSession, currentPlaylistItems))
+        mediaSessionConnector.setQueueNavigator(MusicQueueNavigator(mediaSession))
         mediaSessionConnector.setPlayer(exoplayer)
     }
 
@@ -117,6 +120,18 @@ class MusicService: MediaBrowserServiceCompat() {
 
         if(!ready) {
             result.detach()
+        }
+    }
+
+    inner class MusicQueueNavigator(
+        mediaSession: MediaSessionCompat
+    ) : TimelineQueueNavigator(mediaSession) {
+        override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
+            return if (windowIndex < currentPlaylistItems.size) {
+                currentPlaylistItems[windowIndex].description
+            } else {
+                MediaDescriptionCompat.Builder().build()
+            }
         }
     }
 }
