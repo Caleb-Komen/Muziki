@@ -56,7 +56,8 @@ fun SongsCollection(
             Text(
                 text = "Songs",
                 style = MaterialTheme.typography.h4,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colors.secondary
             )
             Spacer(modifier = Modifier.height(16.dp))
         }

@@ -10,6 +10,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -145,7 +146,11 @@ fun PlaybackPositionIndicator(
         Slider(
             value = position.toFloat(),
             onValueChange = onValueChange,
-            valueRange = 0f..duration.toFloat()
+            valueRange = 0f..duration.toFloat(),
+            colors = SliderDefaults.colors(
+                thumbColor = MaterialTheme.colors.secondary,
+                activeTrackColor = MaterialTheme.colors.secondary
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
         Box( modifier = Modifier.fillMaxWidth()) {
@@ -223,7 +228,7 @@ fun NowPlayingClosedSheet(
     playOrPause: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier) {
+    Box(modifier = modifier.shadow(elevation = 4.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.height(56.dp)

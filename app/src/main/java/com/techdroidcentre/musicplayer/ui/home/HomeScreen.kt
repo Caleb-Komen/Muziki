@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
@@ -44,7 +45,8 @@ fun HomeScreen(
         Text(
             text = "Library",
             style = MaterialTheme.typography.h4,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colors.secondary
         )
         Spacer(modifier = Modifier.height(16.dp))
         BrowsableItems(
@@ -113,7 +115,8 @@ fun HomeScreenItem(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(56.dp)
+                    .size(56.dp),
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onPrimary)
             )
             Text(
                 text = title,

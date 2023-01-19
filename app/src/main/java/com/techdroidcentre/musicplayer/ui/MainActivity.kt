@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material.Surface
 import com.techdroidcentre.musicplayer.ui.theme.MusicPlayerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,7 +22,9 @@ class MainActivity : ComponentActivity() {
                 } else {
                     setContent {
                         MusicPlayerTheme {
-                            MainApp()
+                            Surface {
+                                MainApp()
+                            }
                         }
                     }
                 }
