@@ -11,5 +11,8 @@ Libraries used include:
 You can play songs and browse songs by album and artist.
 
 ## Screenshots
+### Light
 <img src="screenshots/home.png" width=300> &nbsp; <img src="screenshots/albums.png" width=300> &nbsp; <img src="screenshots/artists.png" width=300> &nbsp; <img src="screenshots/songs.png" width=300> &nbsp; <img src="screenshots/nowplaying.png" width=300>
 
+### Dark
+<img src="screenshots/songs_dark.png" width=300> &nbsp; <img src="screenshots/nowplaying_dark.png" width=300>
