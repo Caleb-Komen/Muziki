@@ -77,6 +77,11 @@ class MusicService: MediaBrowserServiceCompat() {
     }
 
     override fun onDestroy() {
+        mediaSession.run {
+            isActive = false
+            release()
+        }
+        exoplayer.release()
         serviceJob.cancel()
     }
 
