@@ -40,6 +40,7 @@ dependencies {
     implementation(Dependencies.exoplayerCore)
     implementation(Dependencies.extMediaSession)
     implementation(Dependencies.coroutinesCore)
+    implementation(Dependencies.exoplayerUi)
     implementation(Dependencies.hiltAndroid)
     kapt(Dependencies.hiltCompiler)
 }

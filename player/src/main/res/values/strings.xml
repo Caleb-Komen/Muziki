@@ -1,0 +1,4 @@
+<resources>
+    <string name="notification_channel_name">Music</string>
+    <string name="notification_channel_description">Currently playing song</string>
+</resources>

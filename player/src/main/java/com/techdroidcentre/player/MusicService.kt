@@ -1,5 +1,7 @@
 package com.techdroidcentre.player
 
+import android.app.Notification
+import android.app.PendingIntent
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
@@ -10,6 +12,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
+import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.techdroidcentre.data.BROWSABLE_ROOT
 import com.techdroidcentre.data.BrowseRoot
 import com.techdroidcentre.data.MusicSource
@@ -50,8 +53,13 @@ class MusicService: MediaBrowserServiceCompat() {
     override fun onCreate() {
         super.onCreate()
 
+        val intent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
+            PendingIntent.getActivity(this, 0, it, 0)
+        }
+
         mediaSession = MediaSessionCompat(this, TAG).apply {
             isActive = true
+            setSessionActivity(intent)
         }
         sessionToken = mediaSession.sessionToken
 
@@ -68,6 +76,8 @@ class MusicService: MediaBrowserServiceCompat() {
             exoplayer.setMediaItems(mediaMetaDataList.map { it.toMediaItem() })
             exoplayer.seekTo(currentItemIndex, playbackPosition)
             exoplayer.prepare()
+            if (playWhenReady)
+                PlaybackNotification(this, mediaSession, notificationListener).showNotification(exoplayer)
         }
 
         mediaSessionConnector = MediaSessionConnector(mediaSession)
@@ -83,6 +93,7 @@ class MusicService: MediaBrowserServiceCompat() {
         }
         exoplayer.release()
         serviceJob.cancel()
+        stopForeground(true)
     }
 
     private fun buildPlayList(itemToPlay: MediaMetadataCompat, parentId: String?): List<MediaMetadataCompat> {
@@ -136,6 +147,23 @@ class MusicService: MediaBrowserServiceCompat() {
                 currentPlaylistItems[windowIndex].description
             } else {
                 MediaDescriptionCompat.Builder().build()
+            }
+        }
+    }
+
+    private val notificationListener = object: PlayerNotificationManager.NotificationListener{
+        override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
+            stopForeground(true)
+            stopSelf()
+        }
+
+        override fun onNotificationPosted(
+            notificationId: Int,
+            notification: Notification,
+            ongoing: Boolean
+        ) {
+            if (ongoing) {
+                startForeground(notificationId, notification)
             }
         }
     }
