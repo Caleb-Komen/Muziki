@@ -231,7 +231,7 @@ fun NowPlayingClosedSheet(
     Box(modifier = modifier.shadow(elevation = 4.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.height(56.dp)
+            modifier = Modifier.height(closedSheetHeight)
         ) {
             Text(
                 text = title,
