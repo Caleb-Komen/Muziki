@@ -50,6 +50,7 @@ android {
 dependencies {
 
     implementation project(path: ':player')
+    implementation project(path: ':data')
 
     implementation Dependencies.core
     implementation Dependencies.composeUi

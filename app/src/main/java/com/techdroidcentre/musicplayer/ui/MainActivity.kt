@@ -1,6 +1,7 @@
 package com.techdroidcentre.musicplayer.ui
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.media.AudioManager
 import android.os.Bundle
 import android.util.Log
@@ -16,8 +17,8 @@ class MainActivity : ComponentActivity() {
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
-                if (!isGranted) {
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ isGranted ->
+                if (isGranted.containsValue(false)) {
                     Log.d("MainActivity", "onCreate: Permission denied")
                 } else {
                     setContent {
@@ -28,7 +29,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
-            }.launch(READ_EXTERNAL_STORAGE)
+            }.launch(arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE))
 
         }
 

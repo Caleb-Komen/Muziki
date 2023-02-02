@@ -2,6 +2,7 @@ package com.techdroidcentre.musicplayer.util
 
 import android.content.ComponentName
 import android.content.Context
+import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -42,6 +43,10 @@ class MusicServiceConnection @Inject constructor(
 
     fun unsubscribe(parentId: String, subscriptionCallback: MediaBrowserCompat.SubscriptionCallback) {
         mediaBrowser.unsubscribe(parentId, subscriptionCallback)
+    }
+
+    fun sendCommand(command: String, args: Bundle?) {
+        mediaController.sendCommand(command, args, null)
     }
 
     inner class MediaBrowserConnectionCallback(private val context: Context) : MediaBrowserCompat.ConnectionCallback() {

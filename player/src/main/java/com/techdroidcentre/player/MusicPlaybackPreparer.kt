@@ -14,6 +14,7 @@ import javax.inject.Inject
 
 class MusicPlaybackPreparer @Inject constructor(
     private val musicSource: MusicSource,
+    private val deleteSong: (String, String) -> Unit,
     private val preparePlaylist: (MediaMetadataCompat, Boolean, String?) -> Unit
 ): MediaSessionConnector.PlaybackPreparer {
     override fun onCommand(
@@ -21,7 +22,16 @@ class MusicPlaybackPreparer @Inject constructor(
         command: String,
         extras: Bundle?,
         cb: ResultReceiver?
-    ): Boolean = false
+    ): Boolean {
+        when(command) {
+            COMMAND -> {
+                val parentId = extras?.getString(KEY_PARENT_ID).toString()
+                val mediaUri = extras?.getString(KEY_MEDIA_URI).toString()
+                deleteSong(parentId, mediaUri)
+            }
+        }
+        return false
+    }
 
     override fun getSupportedPrepareActions(): Long {
         return PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or
@@ -49,3 +59,6 @@ class MusicPlaybackPreparer @Inject constructor(
 
 private const val TAG = "MusicPlaybackPreparer"
 const val EXTRA_PARENT_ID = "com.techdroidcentre.player.EXTRA_PARENT_ID"
+const val COMMAND = "DELETE_SONG"
+const val KEY_PARENT_ID = "com.techdroidcentre.player.KEY_PARENT_ID"
+const val KEY_MEDIA_URI = "com.techdroidcentre.player.KEY_MEDIA_URI"

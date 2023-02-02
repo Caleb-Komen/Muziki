@@ -1,18 +1,31 @@
 package com.techdroidcentre.musicplayer.ui.songs
 
+import android.app.Activity.RESULT_OK
+import android.content.ContentResolver
 import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,10 +46,25 @@ fun SongsScreen(
         val mediaId = it ?: return@observe
         viewModel.subscribe(mediaId)
     }
+
+    var mediaUri = ""
+    val contentResolver = LocalContext.current.contentResolver
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartIntentSenderForResult()) {
+        if (it.resultCode == RESULT_OK) viewModel.deleteSong(mediaUri)
+    }
     val songs by viewModel.songs.observeAsState()
     SongsCollection(
         songs = songs ?: mutableListOf(),
         playSong = viewModel::playSong,
+        deleteSong = {
+            mediaUri = it
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                deleteSong(contentResolver, launcher, it)
+            } else {
+                val result = deleteSong(contentResolver, it)
+                if (result) viewModel.deleteSong(it)
+            }
+        },
         modifier = modifier
     )
 }
@@ -45,11 +73,13 @@ fun SongsScreen(
 fun SongsCollection(
     songs: List<SongData>,
     playSong: (String) -> Unit,
+    deleteSong: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = modifier.padding(8.dp)
+        modifier = modifier
+            .padding(8.dp)
             .fillMaxSize()
     ) {
         item {
@@ -61,14 +91,17 @@ fun SongsCollection(
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
-        items(items = songs) { song ->
+        items(items = songs, key = { song -> song.mediaId }) { song ->
             SongItem(
                 id = song.mediaId,
                 title = song.title,
                 artist = song.subtitle,
                 album = song.description,
                 coverArt = song.coverArt,
-                playSong = playSong
+                playSong = playSong,
+                deleteSong = {
+                    deleteSong(song.uri)
+                }
             )
         }
     }
@@ -83,8 +116,17 @@ fun SongItem(
     album: String,
     coverArt: Bitmap?,
     playSong: (String) -> Unit,
+    deleteSong: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var expanded by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        DeleteSongConfirmationDialog(dismiss = { showDialog = !showDialog }, deleteSong = {
+            deleteSong()
+            showDialog = !showDialog
+        })
+    }
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
@@ -105,7 +147,7 @@ fun SongItem(
                         .clip(shape = MaterialTheme.shapes.small)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = title,
                         style = MaterialTheme.typography.caption,
@@ -120,6 +162,20 @@ fun SongItem(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
+                Spacer(modifier = Modifier.width(8.dp))
+                Box(contentAlignment = Alignment.Center) {
+                    IconButton(onClick = { expanded = !expanded }) {
+                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
+                    }
+                    SongDropdownMenu(
+                        expanded = expanded,
+                        dismiss = { expanded = !expanded },
+                        deleteSong = {
+                            showDialog = !showDialog
+                            expanded = !expanded
+                        }
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(4.dp))
             Divider()
@@ -127,10 +183,30 @@ fun SongItem(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.R)
+fun deleteSong(
+    contentResolver: ContentResolver,
+    launcher: ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>,
+    uri: String
+) {
+    val uris = mutableListOf(Uri.parse(uri))
+    val pendingIntent = MediaStore.createDeleteRequest(contentResolver, uris)
+    val senderRequest = IntentSenderRequest.Builder(pendingIntent.intentSender).build()
+    launcher.launch(senderRequest)
+}
+
+fun deleteSong(
+    contentResolver: ContentResolver,
+    uri: String
+): Boolean {
+    val result = contentResolver.delete(Uri.parse(uri), null, null)
+    return result > 0
+}
+
 @Preview
 @Composable
 fun SongItemPreview() {
     MusicPlayerTheme {
-        SongItem("id","Title", "Artist", "Album", null, {})
+        SongItem("id","Title", "Artist", "Album", null, {}, {})
     }
 }

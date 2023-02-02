@@ -13,9 +13,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
-import com.techdroidcentre.data.BROWSABLE_ROOT
-import com.techdroidcentre.data.BrowseRoot
-import com.techdroidcentre.data.MusicSource
+import com.techdroidcentre.data.*
 import com.techdroidcentre.data.util.METADATA_KEY_ALBUM_ID
 import com.techdroidcentre.data.util.METADATA_KEY_ARTIST_ID
 import com.techdroidcentre.data.util.METADATA_KEY_FLAG
@@ -67,7 +65,7 @@ class MusicService: MediaBrowserServiceCompat() {
             musicSource.fetchSongs()
         }
 
-        val musicPlaybackPreparer = MusicPlaybackPreparer(musicSource) { mediaMetaData, playWhenReady, parentId ->
+        val musicPlaybackPreparer = MusicPlaybackPreparer(musicSource, deleteSong) { mediaMetaData, playWhenReady, parentId ->
             val mediaMetaDataList = buildPlayList(mediaMetaData, parentId)
             currentPlaylistItems = mediaMetaDataList
             val currentItemIndex = if (mediaMetaData == null) 0 else mediaMetaDataList.indexOf(mediaMetaData)
@@ -149,6 +147,17 @@ class MusicService: MediaBrowserServiceCompat() {
                 MediaDescriptionCompat.Builder().build()
             }
         }
+    }
+
+    private val deleteSong = { parentId: String, mediaUri: String ->
+        val albumId = browseRoot.getAlbumIdForSong(parentId, mediaUri)
+        val artistId = browseRoot.getArtistIdForSong(parentId, mediaUri)
+        browseRoot.deleteSong(parentId, mediaUri)
+        notifyChildrenChanged(ALBUMS_ROOT)
+        notifyChildrenChanged(ARTISTS_ROOT)
+        notifyChildrenChanged(SONGS_ROOT)
+        notifyChildrenChanged(albumId)
+        notifyChildrenChanged(artistId)
     }
 
     private val notificationListener = object: PlayerNotificationManager.NotificationListener{

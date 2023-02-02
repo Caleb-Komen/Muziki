@@ -114,4 +114,43 @@ class BrowseRoot @Inject constructor(
         }
     }
 
+    fun deleteSong(parentId: String, mediaUri: String) {
+        val albumId = getAlbumIdForSong(parentId, mediaUri)
+        val artistId = getArtistIdForSong(parentId, mediaUri)
+        val songs = mediaIdToChildren[parentId] ?: mutableListOf()
+        val albumSongs = mediaIdToChildren[albumId] ?: mutableListOf()
+        val artistSongs = mediaIdToChildren[artistId] ?: mutableListOf()
+        val song = songs.first { it.getString(METADATA_KEY_MEDIA_URI) == mediaUri }
+
+        songs -= song
+        albumSongs -= song
+        artistSongs -= song
+
+        // Remove albums with empty songs
+        val albums = mediaIdToChildren[ALBUMS_ROOT]!!
+        val emptyAlbums = albums.filter { album ->
+            mediaIdToChildren[album.getString(METADATA_KEY_MEDIA_ID)]?.isEmpty() ?: false
+        }
+        mediaIdToChildren[ALBUMS_ROOT]?.removeAll(emptyAlbums)
+
+        // Remove artists with zero songs
+        val artists = mediaIdToChildren[ARTISTS_ROOT]!!
+        val emptyArtists = artists.filter { artist ->
+            mediaIdToChildren[artist.getString(METADATA_KEY_MEDIA_ID)]?.isEmpty() ?: false
+        }
+        mediaIdToChildren[ARTISTS_ROOT]?.removeAll(emptyArtists)
+    }
+
+    fun getAlbumIdForSong(parentId: String, mediaUri: String): String {
+        val children = mediaIdToChildren[parentId] ?: mutableListOf()
+        val mediaMetadata = children.first { it.getString(METADATA_KEY_MEDIA_URI) == mediaUri }
+        return mediaMetadata.getLong(METADATA_KEY_ALBUM_ID).toString()
+    }
+
+    fun getArtistIdForSong(parentId: String, mediaUri: String): String {
+        val children = mediaIdToChildren[parentId] ?: mutableListOf()
+        val mediaMetadata = children.first { it.getString(METADATA_KEY_MEDIA_URI) == mediaUri }
+        return mediaMetadata.getLong(METADATA_KEY_ARTIST_ID).toString()
+    }
+
 }

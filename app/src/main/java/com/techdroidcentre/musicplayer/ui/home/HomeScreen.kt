@@ -25,6 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.techdroidcentre.data.ALBUMS_ROOT
+import com.techdroidcentre.data.ARTISTS_ROOT
 import com.techdroidcentre.musicplayer.model.MediaItemData
 
 @Composable
@@ -98,10 +100,10 @@ fun HomeScreenItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.clickable {
                 when (id) {
-                    "ALBUMS" -> {
+                    ALBUMS_ROOT -> {
                         navigateToAlbums(id)
                     }
-                    "ARTISTS" -> {
+                    ARTISTS_ROOT -> {
                         navigateToArtists(id)
                     }
                     else -> {
