@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.techdroidcentre.data.ALBUMS_ROOT
 import com.techdroidcentre.data.ARTISTS_ROOT
+import com.techdroidcentre.data.SONGS_ROOT
 import com.techdroidcentre.musicplayer.model.MediaItemData
 
 @Composable
@@ -34,6 +35,7 @@ fun HomeScreen(
     navigateToAlbums: (String) -> Unit,
     navigateToArtists: (String) -> Unit,
     navigateToSongs: (String) -> Unit,
+    navigateToPlaylists: () -> Unit,
     modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -55,7 +57,8 @@ fun HomeScreen(
             listItems = mediaItems ?: mutableListOf(),
             navigateToAlbums = navigateToAlbums,
             navigateToArtists = navigateToArtists,
-            navigateToSongs = navigateToSongs
+            navigateToSongs = navigateToSongs,
+            navigateToPlaylists = navigateToPlaylists
         )
     }
 }
@@ -66,6 +69,7 @@ fun BrowsableItems(
     navigateToAlbums: (String) -> Unit,
     navigateToArtists: (String) -> Unit,
     navigateToSongs: (String) -> Unit,
+    navigateToPlaylists: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -79,7 +83,8 @@ fun BrowsableItems(
                 title = item.title,
                 navigateToAlbums = navigateToAlbums,
                 navigateToArtists = navigateToArtists,
-                navigateToSongs = navigateToSongs
+                navigateToSongs = navigateToSongs,
+                navigateToPlaylists = navigateToPlaylists
             )
         }
     }
@@ -93,6 +98,7 @@ fun HomeScreenItem(
     navigateToAlbums: (String) -> Unit,
     navigateToArtists: (String) -> Unit,
     navigateToSongs: (String) -> Unit,
+    navigateToPlaylists: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -106,8 +112,11 @@ fun HomeScreenItem(
                     ARTISTS_ROOT -> {
                         navigateToArtists(id)
                     }
-                    else -> {
+                    SONGS_ROOT -> {
                         navigateToSongs(id)
+                    }
+                    else -> {
+                        navigateToPlaylists()
                     }
                 }
             }
@@ -144,14 +153,14 @@ fun HomeScreenItemPreview() {
         id = "1",
         coverArt = "android.resource://com.techdroidcentre.musicplayer/drawable/ic_launcher_background",
         title = "Albums",
-        {}, {}, {}
+        {}, {}, {}, {}
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun BrowsableItemsPreview() {
-    BrowsableItems(listItems, {}, {}, {})
+    BrowsableItems(listItems, {}, {}, {}, {})
 }
 
 val listItems = listOf(

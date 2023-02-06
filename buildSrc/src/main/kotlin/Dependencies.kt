@@ -17,9 +17,14 @@ object Dependencies {
     const val exoplayerCore = "com.google.android.exoplayer:exoplayer-core:${Versions.exoplayer}"
     const val exoplayerUi = "com.google.android.exoplayer:exoplayer-ui:${Versions.exoplayer}"
     const val extMediaSession = "com.google.android.exoplayer:extension-mediasession:${Versions.exoplayer}"
+    const val roomRuntime = "androidx.room:room-runtime:${Versions.room}"
+    const val roomCompiler = "androidx.room:room-compiler:${Versions.room}"
+    const val roomKtx = "androidx.room:room-ktx:${Versions.room}"
+    const val roomTesting = "androidx.room:room-testing:${Versions.room}"
 
     const val junit4 = "junit:junit:${Versions.junit}"
     const val testExtJunit= "androidx.test.ext:junit:${Versions.testExtJunit}"
+    const val testCore= "androidx.test:core-ktx:${Versions.testCore}"
     const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espresso}"
     const val composeUiTestJunit4 = "androidx.compose.ui:ui-test-junit4:${Versions.compose}"
     const val composeUiTooling = "androidx.compose.ui:ui-tooling:${Versions.compose}"
@@ -27,4 +32,6 @@ object Dependencies {
     const val truth = "com.google.truth:truth:${Versions.truth}"
     const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
     const val robolectric = "org.robolectric:robolectric:${Versions.robolectric}"
+    const val archCoreTesting = "androidx.arch.core:core-testing:${Versions.archCoreTesting}"
+    const val testRules = "androidx.test:rules:${Versions.testRules}"
 }

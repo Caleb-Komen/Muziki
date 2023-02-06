@@ -11,10 +11,14 @@ object Versions {
     const val media = "1.6.0"
     const val coroutines = "1.6.4"
     const val exoplayer = "2.18.1"
+    const val room = "2.5.0"
 
     const val junit = "4.13.2"
     const val testExtJunit = "1.1.3"
+    const val testCore = "1.5.0"
     const val espresso = "3.4.0"
     const val truth = "1.1.3"
     const val robolectric = "4.8.1"
+    const val archCoreTesting = "2.1.0"
+    const val testRules = "1.5.0"
 }

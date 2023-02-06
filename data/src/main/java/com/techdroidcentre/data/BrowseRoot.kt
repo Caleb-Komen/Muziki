@@ -18,6 +18,7 @@ const val BROWSABLE_ROOT = "/"
 const val ALBUMS_ROOT = "ALBUMS"
 const val ARTISTS_ROOT = "ARTISTS"
 const val SONGS_ROOT = "SONGS"
+const val PLAYLISTS_ROOT = "PLAYLISTS"
 const val RESOURCE_ROOT_URI = "android.resource://com.techdroidcentre.musicplayer/drawable/"
 
 class BrowseRoot @Inject constructor(
@@ -50,9 +51,17 @@ class BrowseRoot @Inject constructor(
             putLong(METADATA_KEY_FLAG, FLAG_BROWSABLE.toLong())
         }.build()
 
+        val playlistsMetadata = MediaMetadataCompat.Builder().apply {
+            putString(METADATA_KEY_MEDIA_ID, PLAYLISTS_ROOT)
+            putString(METADATA_KEY_TITLE, context.getString(R.string.playlists_title))
+            putString(METADATA_KEY_ALBUM_ART_URI, RESOURCE_ROOT_URI + context.resources.getResourceEntryName(R.drawable.baseline_queue_music_24))
+            putLong(METADATA_KEY_FLAG, FLAG_BROWSABLE.toLong())
+        }.build()
+
         rootList += albumsMetadata
         rootList += artistsMetadata
         rootList += songsMetadata
+        rootList += playlistsMetadata
 
         mediaIdToChildren[BROWSABLE_ROOT] = rootList
 

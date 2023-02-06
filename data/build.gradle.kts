@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 32
+        targetSdk = 33
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -47,11 +47,22 @@ dependencies {
     implementation(Dependencies.media)
     implementation(Dependencies.coroutinesCore)
     implementation(Dependencies.coroutinesAndroid)
+    implementation(Dependencies.roomRuntime)
+    implementation(Dependencies.roomKtx)
+    kapt(Dependencies.roomCompiler)
 
     testImplementation(Dependencies.truth)
     testImplementation(Dependencies.coroutinesTest)
     testImplementation(Dependencies.junit4)
     testImplementation(Dependencies.robolectric)
+    testImplementation(Dependencies.roomTesting)
+    androidTestImplementation(Dependencies.junit4)
+    androidTestImplementation(Dependencies.testExtJunit)
+    androidTestImplementation(Dependencies.testCore)
+    androidTestImplementation(Dependencies.coroutinesTest)
+    androidTestImplementation(Dependencies.truth)
+    androidTestImplementation(Dependencies.archCoreTesting)
+    androidTestImplementation(Dependencies.testRules)
 }
 
 kapt {

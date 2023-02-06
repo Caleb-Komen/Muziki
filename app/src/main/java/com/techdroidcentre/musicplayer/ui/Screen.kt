@@ -25,4 +25,6 @@ sealed class Screen(val route: String) {
             return "$SONGS_SCREEN_ROUTE/$mediaId"
         }
     }
+
+    object PlaylistsScreen: Screen("playlists")
 }

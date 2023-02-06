@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import com.techdroidcentre.musicplayer.ui.albums.AlbumsScreen
 import com.techdroidcentre.musicplayer.ui.artists.ArtistsScreen
 import com.techdroidcentre.musicplayer.ui.home.HomeScreen
+import com.techdroidcentre.musicplayer.ui.playlists.PlaylistScreen
 import com.techdroidcentre.musicplayer.ui.songs.SongsScreen
 
 @Composable
@@ -31,6 +32,9 @@ fun MusicNavGraph(navController: NavHostController, modifier: Modifier = Modifie
                 },
                 navigateToSongs = {
                     navController.navigate(Screen.SongsScreen.passId(it))
+                },
+                navigateToPlaylists = {
+                    navController.navigate(Screen.PlaylistsScreen.route)
                 }
             )
         }
@@ -74,6 +78,12 @@ fun MusicNavGraph(navController: NavHostController, modifier: Modifier = Modifie
             )
         ) {
             SongsScreen()
+        }
+        
+        composable(
+            route = Screen.PlaylistsScreen.route
+        ) {
+            PlaylistScreen()
         }
     }
 }
