@@ -1,5 +1,6 @@
 package com.techdroidcentre.musicplayer.ui.nowplaying
 
+import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -24,6 +26,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.techdroidcentre.musicplayer.R
 import com.techdroidcentre.musicplayer.model.NowPlayingMetadata
 import com.techdroidcentre.musicplayer.ui.theme.MusicPlayerTheme
+import com.techdroidcentre.musicplayer.util.getCoverArt
+import com.techdroidcentre.musicplayer.util.getThumbnail
 import com.techdroidcentre.musicplayer.util.lerp
 import kotlin.math.floor
 
@@ -110,8 +114,18 @@ fun PlaybackMetaData(
         verticalArrangement = Arrangement.SpaceAround,
         modifier = modifier.fillMaxWidth()
     ) {
+        val context = LocalContext.current
+        val coverArt = try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                getThumbnail(context, nowPlayingMetadata.albumArt)
+            } else {
+                getCoverArt(nowPlayingMetadata.albumArt)
+            }
+        } catch (ex: Exception) {
+            null
+        }
         Image(
-            painter = if (nowPlayingMetadata.albumArt != null) rememberAsyncImagePainter(model = nowPlayingMetadata.albumArt)
+            painter = if (coverArt != null) rememberAsyncImagePainter(coverArt)
             else painterResource(id = com.techdroidcentre.data.R.drawable.ic_baseline_music_note_24),
             contentDescription = null,
             modifier = Modifier

@@ -43,7 +43,7 @@ class SongsViewModel @Inject constructor(
                     subtitle = it.description.subtitle.toString(),
                     description = it.description.description.toString(),
                     browsable = it.isBrowsable,
-                    coverArt = it.description.iconBitmap
+                    coverArt = it.description.iconUri.toString()
                 )
             }
             _songs.value = songItems

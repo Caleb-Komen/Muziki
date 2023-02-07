@@ -26,7 +26,7 @@ class MusicSourceTest {
     fun setup() {
         val app = RuntimeEnvironment.getApplication()
         mediaQuery = FakeMediaQueryImpl()
-        musicSource = MusicSource(mediaQuery, dispatcher, app)
+        musicSource = MusicSource(mediaQuery, dispatcher)
     }
 
     @Test

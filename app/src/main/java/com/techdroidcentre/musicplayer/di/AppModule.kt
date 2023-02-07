@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-object ServiceModule {
+object AppModule {
     @Singleton
     @Provides
     fun provideComponentName(@ApplicationContext context: Context): ComponentName {

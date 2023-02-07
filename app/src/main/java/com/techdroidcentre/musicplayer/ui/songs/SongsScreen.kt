@@ -2,10 +2,14 @@ package com.techdroidcentre.musicplayer.ui.songs
 
 import android.app.Activity.RESULT_OK
 import android.content.ContentResolver
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Size
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -36,6 +40,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.techdroidcentre.musicplayer.model.SongData
 import com.techdroidcentre.musicplayer.ui.theme.MusicPlayerTheme
+import com.techdroidcentre.musicplayer.util.getCoverArt
+import com.techdroidcentre.musicplayer.util.getThumbnail
 
 @Composable
 fun SongsScreen(
@@ -97,7 +103,7 @@ fun SongsCollection(
                 title = song.title,
                 artist = song.subtitle,
                 album = song.description,
-                coverArt = song.coverArt,
+                artUri = song.coverArt,
                 playSong = playSong,
                 deleteSong = {
                     deleteSong(song.uri)
@@ -114,13 +120,23 @@ fun SongItem(
     title: String,
     artist: String,
     album: String,
-    coverArt: Bitmap?,
+    artUri: String,
     playSong: (String) -> Unit,
     deleteSong: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
+    val coverArt = try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            getThumbnail(context, artUri)
+        } else {
+            getCoverArt(artUri)
+        }
+    } catch (ex: Exception) {
+        null
+    }
     if (showDialog) {
         DeleteSongConfirmationDialog(dismiss = { showDialog = !showDialog }, deleteSong = {
             deleteSong()
@@ -207,6 +223,6 @@ fun deleteSong(
 @Composable
 fun SongItemPreview() {
     MusicPlayerTheme {
-        SongItem("id","Title", "Artist", "Album", null, {}, {})
+        SongItem("id","Title", "Artist", "Album", "", {}, {})
     }
 }

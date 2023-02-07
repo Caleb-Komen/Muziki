@@ -1,6 +1,13 @@
 package com.techdroidcentre.musicplayer.ui.artists
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.media.MediaMetadataRetriever
+import android.net.Uri
+import android.os.Build
+import android.util.Size
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -17,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.techdroidcentre.musicplayer.model.ArtistData
+import com.techdroidcentre.musicplayer.util.getCoverArt
+import com.techdroidcentre.musicplayer.util.getThumbnail
 
 @Composable
 fun ArtistsScreen(
@@ -69,7 +79,7 @@ fun ArtistsCollection(
                     id = artist.mediaId,
                     title = artist.title,
                     subtitle = artist.subtitle,
-                    coverArt = artist.coverArt,
+                    artUri = artist.coverArt,
                     navigateToSongs = navigateToSongs
                 )
             }
@@ -83,10 +93,20 @@ fun ArtistItem(
     id: String,
     title: String,
     subtitle: String,
-    coverArt: Bitmap?,
+    artUri: String,
     navigateToSongs: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val coverArt = try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            getThumbnail(context, artUri)
+        } else {
+            getCoverArt(artUri)
+        }
+    } catch (ex: Exception) {
+        null
+    }
 
     Surface(
         modifier = modifier.width(150.dp),
