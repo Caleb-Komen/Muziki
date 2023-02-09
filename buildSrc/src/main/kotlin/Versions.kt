@@ -18,7 +18,7 @@ object Versions {
     const val testCore = "1.5.0"
     const val espresso = "3.4.0"
     const val truth = "1.1.3"
-    const val robolectric = "4.8.1"
+    const val robolectric = "4.9.2"
     const val archCoreTesting = "2.1.0"
     const val testRules = "1.5.0"
 }
