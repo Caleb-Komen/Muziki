@@ -52,7 +52,10 @@ fun SongsScreen(
     var mediaUri = ""
     val contentResolver = LocalContext.current.contentResolver
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartIntentSenderForResult()) {
-        if (it.resultCode == RESULT_OK) viewModel.deleteSong(mediaUri)
+        if (it.resultCode == RESULT_OK) {
+            viewModel.deleteSong(mediaUri)
+            viewModel.deletePlaylistSong(mediaUri)
+        }
     }
     val songs by viewModel.songs.observeAsState()
     val playlists by viewModel.playlists.observeAsState()
@@ -67,7 +70,10 @@ fun SongsScreen(
                 deleteSong(contentResolver, launcher, it)
             } else {
                 val result = deleteSong(contentResolver, it)
-                if (result) viewModel.deleteSong(it)
+                if (result) {
+                    viewModel.deleteSong(it)
+                    viewModel.deletePlaylistSong(it)
+                }
             }
         },
         addToPlaylist = viewModel::addSongToPlaylist,

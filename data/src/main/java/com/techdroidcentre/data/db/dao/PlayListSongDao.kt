@@ -15,6 +15,6 @@ interface PlayListSongDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addSong(playListSongEntity: PlayListSongEntity)
 
-    @Query("DELETE FROM playlist_songs WHERE id = :id")
-    suspend fun deleteSong(id: String)
+    @Query("DELETE FROM playlist_songs WHERE mediaUri = :mediaUri")
+    suspend fun deleteSong(mediaUri: String)
 }

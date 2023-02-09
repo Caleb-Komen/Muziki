@@ -21,7 +21,7 @@ class PlayListSongRepositoryImpl @Inject constructor(
         playlistSongDao.addSong(playListSong.toEntity(playlistId))
     }
 
-    override suspend fun deleteSong(id: String) {
-        playlistSongDao.deleteSong(id)
+    override suspend fun deleteSong(mediaUri: String) {
+        playlistSongDao.deleteSong(mediaUri)
     }
 }

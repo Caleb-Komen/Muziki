@@ -137,9 +137,9 @@ class SongsViewModel @Inject constructor(
         musicServiceConnection.sendCommand(COMMAND, args)
     }
 
-    fun deletePlaylistSong(id: String) {
+    fun deletePlaylistSong(mediaUri: String) {
         viewModelScope.launch {
-            playlistSongRepository.deleteSong(id)
+            playlistSongRepository.deleteSong(mediaUri)
         }
     }
 

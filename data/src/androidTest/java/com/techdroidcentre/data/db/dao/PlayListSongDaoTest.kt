@@ -62,7 +62,7 @@ class PlayListSongDaoTest: BaseTest() {
         Truth.assertThat(result).contains(song1)
         Truth.assertThat(result).contains(song2)
 
-        playListSongDao.deleteSong(song1.id)
+        playListSongDao.deleteSong(song1.mediaUri)
         result = playListSongDao.getPlayListSongs(song1.playListId).getOrAwaitValue()
         Truth.assertThat(result.size).isEqualTo(1)
         Truth.assertThat(result).doesNotContain(song1)

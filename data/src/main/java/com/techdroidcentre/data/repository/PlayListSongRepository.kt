@@ -8,5 +8,5 @@ interface PlayListSongRepository {
 
     suspend fun addSong(playlistId: Long, playListSong: PlayListSong)
 
-    suspend fun deleteSong(id: String)
+    suspend fun deleteSong(mediaUri: String)
 }

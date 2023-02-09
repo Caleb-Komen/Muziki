@@ -161,7 +161,8 @@ fun PlaylistSongItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = if (coverArt != null) rememberAsyncImagePainter(model = coverArt) else painterResource(id = R.drawable.ic_baseline_music_note_24),
+                painter = if (coverArt != null) rememberAsyncImagePainter(model = coverArt)
+                else painterResource(id = R.drawable.ic_baseline_music_note_24),
                 contentDescription = null,
                 modifier = Modifier
                     .size(56.dp)
@@ -192,7 +193,7 @@ fun PlaylistSongItem(
                     expanded = expanded,
                     dismiss = { expanded = !expanded },
                     deleteSong = {
-                        deleteSong(song.mediaId)
+                        deleteSong(song.uri)
                         expanded = !expanded
                     }
                 )
