@@ -2,14 +2,9 @@ package com.techdroidcentre.musicplayer.ui.songs
 
 import android.app.Activity.RESULT_OK
 import android.content.ContentResolver
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Size
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -36,17 +31,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.techdroidcentre.musicplayer.model.PlayListViewState
 import com.techdroidcentre.musicplayer.model.SongData
+import com.techdroidcentre.musicplayer.ui.playlists.CreatePlaylistDialog
 import com.techdroidcentre.musicplayer.ui.theme.MusicPlayerTheme
 import com.techdroidcentre.musicplayer.util.getCoverArt
 import com.techdroidcentre.musicplayer.util.getThumbnail
 
 @Composable
 fun SongsScreen(
-    modifier: Modifier = Modifier,
-    viewModel: SongsViewModel = hiltViewModel()
+    viewModel: SongsViewModel,
+    modifier: Modifier = Modifier
 ) {
     viewModel.mediaId.observe(LocalLifecycleOwner.current) {
         val mediaId = it ?: return@observe
@@ -59,8 +55,11 @@ fun SongsScreen(
         if (it.resultCode == RESULT_OK) viewModel.deleteSong(mediaUri)
     }
     val songs by viewModel.songs.observeAsState()
+    val playlists by viewModel.playlists.observeAsState()
+
     SongsCollection(
         songs = songs ?: mutableListOf(),
+        playlists = playlists ?: mutableListOf(),
         playSong = viewModel::playSong,
         deleteSong = {
             mediaUri = it
@@ -71,6 +70,8 @@ fun SongsScreen(
                 if (result) viewModel.deleteSong(it)
             }
         },
+        addToPlaylist = viewModel::addSongToPlaylist,
+        createPlaylist = viewModel::createPlaylist,
         modifier = modifier
     )
 }
@@ -78,8 +79,11 @@ fun SongsScreen(
 @Composable
 fun SongsCollection(
     songs: List<SongData>,
+    playlists: List<PlayListViewState>,
     playSong: (String) -> Unit,
     deleteSong: (String) -> Unit,
+    addToPlaylist: (Long, SongData) -> Unit,
+    createPlaylist: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -105,9 +109,14 @@ fun SongsCollection(
                 album = song.description,
                 artUri = song.coverArt,
                 playSong = playSong,
+                playlists = playlists,
                 deleteSong = {
                     deleteSong(song.uri)
-                }
+                },
+                addToPlaylist = {
+                    addToPlaylist(it, song)
+                },
+                createPlaylist = createPlaylist
             )
         }
     }
@@ -121,13 +130,19 @@ fun SongItem(
     artist: String,
     album: String,
     artUri: String,
+    playlists: List<PlayListViewState>,
     playSong: (String) -> Unit,
     deleteSong: () -> Unit,
+    addToPlaylist: (Long) -> Unit,
+    createPlaylist: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
-    var showDialog by remember { mutableStateOf(false) }
+    var playlistName by remember { mutableStateOf("") }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var showPlaylistsDialog by remember { mutableStateOf(false) }
+    var showCreatePlaylistDialog by remember { mutableStateOf(false) }
     val coverArt = try {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             getThumbnail(context, artUri)
@@ -137,12 +152,38 @@ fun SongItem(
     } catch (ex: Exception) {
         null
     }
-    if (showDialog) {
-        DeleteSongConfirmationDialog(dismiss = { showDialog = !showDialog }, deleteSong = {
+    if (showDeleteDialog) {
+        DeleteSongConfirmationDialog(dismiss = { showDeleteDialog = !showDeleteDialog }, deleteSong = {
             deleteSong()
-            showDialog = !showDialog
+            showDeleteDialog = !showDeleteDialog
         })
     }
+    if (showPlaylistsDialog) {
+        PlaylistsListDialog(
+            playlists = playlists,
+            onPlaylistClick = {
+                addToPlaylist(it)
+                showPlaylistsDialog = !showPlaylistsDialog
+            },
+            createPlaylist = { showCreatePlaylistDialog = !showCreatePlaylistDialog },
+            dismiss = { showPlaylistsDialog = !showPlaylistsDialog }
+        )
+    }
+
+    if (showCreatePlaylistDialog) {
+        CreatePlaylistDialog(
+            name = playlistName,
+            onNameChange = { playlistName = it },
+            createPlaylist = {
+                createPlaylist(it)
+                showCreatePlaylistDialog = !showCreatePlaylistDialog
+            },
+            dismiss = {
+                showCreatePlaylistDialog = !showCreatePlaylistDialog
+            }
+        )
+    }
+
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
@@ -156,7 +197,8 @@ fun SongItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = if (coverArt != null) rememberAsyncImagePainter(model = coverArt) else painterResource(id = com.techdroidcentre.data.R.drawable.ic_baseline_music_note_24),
+                    painter = if (coverArt != null) rememberAsyncImagePainter(model = coverArt)
+                    else painterResource(id = com.techdroidcentre.data.R.drawable.ic_baseline_music_note_24),
                     contentDescription = null,
                     modifier = Modifier
                         .size(56.dp)
@@ -187,7 +229,11 @@ fun SongItem(
                         expanded = expanded,
                         dismiss = { expanded = !expanded },
                         deleteSong = {
-                            showDialog = !showDialog
+                            showDeleteDialog = !showDeleteDialog
+                            expanded = !expanded
+                        },
+                        addToPlaylist = {
+                            showPlaylistsDialog = !showPlaylistsDialog
                             expanded = !expanded
                         }
                     )
@@ -223,6 +269,8 @@ fun deleteSong(
 @Composable
 fun SongItemPreview() {
     MusicPlayerTheme {
-        SongItem("id","Title", "Artist", "Album", "", {}, {})
+        SongItem(
+            "id","Title", "Artist", "Album", "", emptyList(), {}, {}, {}, {}
+        )
     }
 }

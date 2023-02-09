@@ -1,8 +1,10 @@
 package com.techdroidcentre.data.repository
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import com.techdroidcentre.data.db.dao.PlayListSongDao
 import com.techdroidcentre.data.mapper.toEntity
+import com.techdroidcentre.data.mapper.toModel
 import com.techdroidcentre.data.model.PlayListSong
 import javax.inject.Inject
 
@@ -10,7 +12,9 @@ class PlayListSongRepositoryImpl @Inject constructor(
     private val playlistSongDao: PlayListSongDao
 ): PlayListSongRepository {
     override fun getPlayListSongs(playListId: Long): LiveData<List<PlayListSong>> {
-        TODO("Not yet implemented")
+        return Transformations.map(playlistSongDao.getPlayListSongs(playListId)) { playlistSongs ->
+            playlistSongs.map { it.toModel() }
+        }
     }
 
     override suspend fun addSong(playlistId: Long, playListSong: PlayListSong) {

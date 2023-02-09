@@ -7,6 +7,8 @@ import com.techdroidcentre.data.db.dao.PlayListDao
 import com.techdroidcentre.data.db.dao.PlayListSongDao
 import com.techdroidcentre.data.repository.PlayListRepository
 import com.techdroidcentre.data.repository.PlayListRepositoryImpl
+import com.techdroidcentre.data.repository.PlayListSongRepository
+import com.techdroidcentre.data.repository.PlayListSongRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,5 +43,11 @@ object AppModule {
     @Provides
     fun providePlaylistRepository(playlistDao: PlayListDao): PlayListRepository {
         return PlayListRepositoryImpl(playlistDao)
+    }
+
+    @Singleton
+    @Provides
+    fun providePlaylistSongRepository(playlistSongDao: PlayListSongDao): PlayListSongRepository {
+        return PlayListSongRepositoryImpl(playlistSongDao)
     }
 }

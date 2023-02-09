@@ -5,6 +5,7 @@ package com.techdroidcentre.musicplayer.ui.playlists
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,17 +37,29 @@ import kotlin.math.roundToInt
 
 @Composable
 fun PlaylistScreen(
+    navigateToSongs: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PlayListsViewModel = hiltViewModel()
 ) {
     val playlists by viewModel.playlists.observeAsState()
     var playlistName by remember { mutableStateOf("")}
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        CreatePlaylistDialog(
+            name = playlistName,
+            onNameChange = { playlistName = it },
+            createPlaylist = {
+                viewModel.createPlaylist(it)
+                showDialog = !showDialog
+            },
+            dismiss = { showDialog = !showDialog }
+        )
+    }
 
     PlaylistScreen(
         playlists = playlists ?: mutableListOf(),
-        playlistName = playlistName,
-        onNameChange = { playlistName = it },
-        createPlaylist = viewModel::createPlaylist,
+        showDialog = { showDialog = !showDialog},
+        navigateToSongs = navigateToSongs,
         deletePlaylist = viewModel::deletePlaylist,
         modifier = modifier
     )
@@ -55,24 +68,11 @@ fun PlaylistScreen(
 @Composable
 fun PlaylistScreen(
     playlists: List<PlayListViewState>,
-    playlistName: String,
-    onNameChange: (String) -> Unit,
-    createPlaylist: (String) -> Unit,
+    showDialog: () -> Unit,
+    navigateToSongs: (Long) -> Unit,
     deletePlaylist: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var showDialog by remember { mutableStateOf(false) }
-    if (showDialog) {
-        CreatePlaylistDialog(
-            name = playlistName,
-            onNameChange = onNameChange,
-            createPlaylist = {
-                createPlaylist(it)
-                showDialog = !showDialog
-            },
-            dismiss = { showDialog = !showDialog }
-        )
-    }
     Column(
         modifier = modifier.padding(8.dp)
     ) {
@@ -88,7 +88,7 @@ fun PlaylistScreen(
             )
 
             IconButton(
-                onClick = { showDialog = !showDialog },
+                onClick = showDialog,
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {
                 Icon(
@@ -108,6 +108,7 @@ fun PlaylistScreen(
                     PlaylistItem(
                         id = playlist.id,
                         name = playlist.name,
+                        navigateToSongs = navigateToSongs,
                         deletePlaylist = deletePlaylist
                     )
                 }
@@ -145,6 +146,7 @@ fun EmptyPlaylists(modifier: Modifier = Modifier) {
 fun PlaylistItem(
     id: Long,
     name: String,
+    navigateToSongs: (Long) -> Unit,
     deletePlaylist: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -163,7 +165,10 @@ fun PlaylistItem(
             thresholds = { _, _ ->
                 FractionalThreshold(0.5f)
             }
-        ),
+        )
+            .clickable {
+                navigateToSongs(id)
+            },
         verticalArrangement = Arrangement.Center
     ) {
         Box(
@@ -222,7 +227,7 @@ fun PlaylistScreenPreview() {
         Surface {
             PlaylistScreen(
                 playlists = List(15) { PlayListViewState(it.toLong(), "Playlist $it") },
-                "", {}, {}, {}
+                {}, {}, {}
             )
 
         }
@@ -236,7 +241,7 @@ fun EmptyPlaylistScreenPreview() {
     MusicPlayerTheme {
         Surface {
             PlaylistScreen(
-                playlists = emptyList(), "", {}, {}, {}
+                playlists = emptyList(), {}, {}, {}
             )
 
         }
