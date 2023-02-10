@@ -63,7 +63,9 @@ fun SongsScreen(
     SongsCollection(
         songs = songs ?: mutableListOf(),
         playlists = playlists ?: mutableListOf(),
-        playSong = viewModel::playSong,
+        playSong = {
+            viewModel.playSong(it)
+        },
         deleteSong = {
             mediaUri = it
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

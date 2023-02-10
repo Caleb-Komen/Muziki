@@ -65,8 +65,8 @@ class MusicService: MediaBrowserServiceCompat() {
             musicSource.fetchSongs()
         }
 
-        val musicPlaybackPreparer = MusicPlaybackPreparer(musicSource, deleteSong) { mediaMetaData, playWhenReady, parentId ->
-            val mediaMetaDataList = buildPlayList(mediaMetaData, parentId)
+        val musicPlaybackPreparer = MusicPlaybackPreparer(musicSource, deleteSong) { mediaMetaData, playWhenReady, parentId, playlistSongs ->
+            val mediaMetaDataList = playlistSongs.ifEmpty { buildPlayList(mediaMetaData, parentId) }
             currentPlaylistItems = mediaMetaDataList
             val currentItemIndex = if (mediaMetaData == null) 0 else mediaMetaDataList.indexOf(mediaMetaData)
             val playbackPosition = 0L

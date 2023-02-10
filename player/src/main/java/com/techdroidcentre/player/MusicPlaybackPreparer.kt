@@ -15,7 +15,7 @@ import javax.inject.Inject
 class MusicPlaybackPreparer @Inject constructor(
     private val musicSource: MusicSource,
     private val deleteSong: (String, String) -> Unit,
-    private val preparePlaylist: (MediaMetadataCompat, Boolean, String?) -> Unit
+    private val preparePlaylist: (MediaMetadataCompat, Boolean, String?, List<MediaMetadataCompat>) -> Unit
 ): MediaSessionConnector.PlaybackPreparer {
     override fun onCommand(
         player: Player,
@@ -44,10 +44,18 @@ class MusicPlaybackPreparer @Inject constructor(
         musicSource.whenReady {
             val itemToPlay = musicSource.songs.find { it.getString(METADATA_KEY_MEDIA_ID) == mediaId }
             val parentId = extras?.getString(EXTRA_PARENT_ID)
+            val songIds = extras?.getStringArrayList(EXTRA_SONGS_IDS)
+            val playlistSongs = musicSource.songs.filter {
+                songIds?.contains(it.getString(METADATA_KEY_MEDIA_ID)) ?: false
+            }
             if (itemToPlay == null){
                 Log.d(TAG, "Media with id $mediaId not found.")
             } else{
-                preparePlaylist(itemToPlay, playWhenReady, parentId)
+                if (songIds == null) {
+                    preparePlaylist(itemToPlay, playWhenReady, parentId, emptyList())
+                } else {
+                    preparePlaylist(itemToPlay, playWhenReady, parentId, playlistSongs)
+                }
             }
         }
     }
@@ -59,6 +67,7 @@ class MusicPlaybackPreparer @Inject constructor(
 
 private const val TAG = "MusicPlaybackPreparer"
 const val EXTRA_PARENT_ID = "com.techdroidcentre.player.EXTRA_PARENT_ID"
+const val EXTRA_SONGS_IDS = "com.techdroidcentre.player.EXTRA_SONGS_IDS"
 const val COMMAND = "DELETE_SONG"
 const val KEY_PARENT_ID = "com.techdroidcentre.player.KEY_PARENT_ID"
 const val KEY_MEDIA_URI = "com.techdroidcentre.player.KEY_MEDIA_URI"

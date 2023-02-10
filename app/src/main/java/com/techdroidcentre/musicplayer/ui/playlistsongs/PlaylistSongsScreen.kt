@@ -2,6 +2,7 @@ package com.techdroidcentre.musicplayer.ui.playlistsongs
 
 import android.os.Build
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -59,6 +60,7 @@ fun PlaylistSongsScreen(
 
     PlaylistSongsScreen(
         songs = playlistSongs ?: mutableListOf(),
+        playSong = { viewModel.playSong(mediaId = it, isPlaylistSong = true) },
         deleteSong = viewModel::deletePlaylistSong,
         showDialog = { showDialog = !showDialog },
         modifier = modifier
@@ -68,6 +70,7 @@ fun PlaylistSongsScreen(
 @Composable
 fun PlaylistSongsScreen(
     songs: List<SongData>,
+    playSong: (String) -> Unit,
     deleteSong: (String) -> Unit,
     showDialog: () -> Unit,
     modifier: Modifier = Modifier
@@ -107,6 +110,7 @@ fun PlaylistSongsScreen(
                 items(items = songs, key = { song -> song.mediaId }) { song ->
                     PlaylistSongItem(
                         song = song,
+                        playSong = playSong,
                         deleteSong = deleteSong
                     )
                 }
@@ -142,6 +146,7 @@ fun EmptyPlaylist(modifier: Modifier = Modifier) {
 @Composable
 fun PlaylistSongItem(
     song: SongData,
+    playSong: (String) -> Unit,
     deleteSong: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -156,7 +161,10 @@ fun PlaylistSongItem(
     } catch (ex: Exception) {
         null
     }
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier.fillMaxWidth()
+            .clickable { playSong(song.mediaId) }
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {

@@ -16,10 +16,7 @@ import com.techdroidcentre.musicplayer.model.SongData
 import com.techdroidcentre.musicplayer.ui.MEDIA_ID_KEY
 import com.techdroidcentre.musicplayer.ui.PLAYLIST_ID_KEY
 import com.techdroidcentre.musicplayer.util.MusicServiceConnection
-import com.techdroidcentre.player.COMMAND
-import com.techdroidcentre.player.EXTRA_PARENT_ID
-import com.techdroidcentre.player.KEY_MEDIA_URI
-import com.techdroidcentre.player.KEY_PARENT_ID
+import com.techdroidcentre.player.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -90,7 +87,7 @@ class SongsViewModel @Inject constructor(
         musicServiceConnection.unsubscribe(_mediaId.value!!, subscriptionCallback)
     }
 
-    fun playSong(mediaId: String) {
+    fun playSong(mediaId: String, isPlaylistSong: Boolean = false) {
         val playbackState = musicServiceConnection.playbackState.value
         val isPlaying = playbackState?.state == PlaybackStateCompat.STATE_PLAYING
         val isPaused = playbackState?.state == PlaybackStateCompat.STATE_PAUSED
@@ -101,10 +98,20 @@ class SongsViewModel @Inject constructor(
             }
         } else {
             val extras = Bundle()
-            extras.putString(EXTRA_PARENT_ID, _mediaId.value)
+            if (!isPlaylistSong) {
+                extras.putString(EXTRA_PARENT_ID, _mediaId.value)
+            } else {
+                extras.putStringArrayList(EXTRA_SONGS_IDS, getPlaylistSongsIds())
+            }
             transportControls.playFromMediaId(mediaId, extras)
         }
         nowPlayingMediaId = mediaId
+    }
+
+    private fun getPlaylistSongsIds(): ArrayList<String> {
+        return ArrayList(playlistSongs.value?.map {
+            it.mediaId
+        } ?: arrayListOf())
     }
 
     fun addToSelectedSongs(song: SongData) {
