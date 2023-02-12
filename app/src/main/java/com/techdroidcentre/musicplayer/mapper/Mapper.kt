@@ -20,7 +20,7 @@ fun PlayListSong.toSongData(): SongData {
         title = title,
         subtitle = artist,
         description = album,
-        coverArt = artUri
+        coverArt = null
     )
 }
 
@@ -31,6 +31,6 @@ fun SongData.toPlaylistSong(): PlayListSong {
         title = title,
         artist = subtitle,
         album = description,
-        artUri = coverArt
+        artUri = ""
     )
 }

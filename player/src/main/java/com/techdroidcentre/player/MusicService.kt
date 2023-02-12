@@ -65,8 +65,8 @@ class MusicService: MediaBrowserServiceCompat() {
             musicSource.fetchSongs()
         }
 
-        val musicPlaybackPreparer = MusicPlaybackPreparer(musicSource, deleteSong) { mediaMetaData, playWhenReady, parentId, playlistSongs ->
-            val mediaMetaDataList = playlistSongs.ifEmpty { buildPlayList(mediaMetaData, parentId) }
+        val musicPlaybackPreparer = MusicPlaybackPreparer(musicSource, deleteSong) { mediaMetaData, playWhenReady, parentId, songIds ->
+            val mediaMetaDataList = buildPlayList(mediaMetaData, parentId, songIds)
             currentPlaylistItems = mediaMetaDataList
             val currentItemIndex = if (mediaMetaData == null) 0 else mediaMetaDataList.indexOf(mediaMetaData)
             val playbackPosition = 0L
@@ -94,7 +94,16 @@ class MusicService: MediaBrowserServiceCompat() {
         stopForeground(true)
     }
 
-    private fun buildPlayList(itemToPlay: MediaMetadataCompat, parentId: String?): List<MediaMetadataCompat> {
+    private fun buildPlayList(
+        itemToPlay: MediaMetadataCompat,
+        parentId: String?,
+        songIds: ArrayList<String>?
+    ): List<MediaMetadataCompat> {
+        if (songIds != null && songIds.isNotEmpty()) {
+            return musicSource.songs.filter {
+                songIds.contains(it.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)) ?: false
+            }
+        }
         val albumId = itemToPlay.getLong(METADATA_KEY_ALBUM_ID).toString()
         val artistId = itemToPlay.getLong(METADATA_KEY_ARTIST_ID).toString()
         return when (parentId) {

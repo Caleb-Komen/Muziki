@@ -19,6 +19,7 @@ import com.techdroidcentre.musicplayer.util.MusicServiceConnection
 import com.techdroidcentre.player.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.internal.filterList
 import javax.inject.Inject
 
 @HiltViewModel
@@ -71,7 +72,7 @@ class SongsViewModel @Inject constructor(
                     subtitle = it.description.subtitle.toString(),
                     description = it.description.description.toString(),
                     browsable = it.isBrowsable,
-                    coverArt = it.description.iconUri.toString()
+                    coverArt = it.description.iconBitmap
                 )
             }
             _songs.value = songItems

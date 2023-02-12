@@ -15,7 +15,7 @@ import javax.inject.Inject
 class MusicPlaybackPreparer @Inject constructor(
     private val musicSource: MusicSource,
     private val deleteSong: (String, String) -> Unit,
-    private val preparePlaylist: (MediaMetadataCompat, Boolean, String?, List<MediaMetadataCompat>) -> Unit
+    private val preparePlaylist: (MediaMetadataCompat, Boolean, String?, ArrayList<String>?) -> Unit
 ): MediaSessionConnector.PlaybackPreparer {
     override fun onCommand(
         player: Player,
@@ -45,17 +45,10 @@ class MusicPlaybackPreparer @Inject constructor(
             val itemToPlay = musicSource.songs.find { it.getString(METADATA_KEY_MEDIA_ID) == mediaId }
             val parentId = extras?.getString(EXTRA_PARENT_ID)
             val songIds = extras?.getStringArrayList(EXTRA_SONGS_IDS)
-            val playlistSongs = musicSource.songs.filter {
-                songIds?.contains(it.getString(METADATA_KEY_MEDIA_ID)) ?: false
-            }
             if (itemToPlay == null){
                 Log.d(TAG, "Media with id $mediaId not found.")
             } else{
-                if (songIds == null) {
-                    preparePlaylist(itemToPlay, playWhenReady, parentId, emptyList())
-                } else {
-                    preparePlaylist(itemToPlay, playWhenReady, parentId, playlistSongs)
-                }
+                preparePlaylist(itemToPlay, playWhenReady, parentId, songIds)
             }
         }
     }

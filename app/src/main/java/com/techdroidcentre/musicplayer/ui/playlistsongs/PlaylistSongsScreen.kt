@@ -1,6 +1,5 @@
 package com.techdroidcentre.musicplayer.ui.playlistsongs
 
-import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,8 +25,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.techdroidcentre.data.R
 import com.techdroidcentre.musicplayer.model.SongData
 import com.techdroidcentre.musicplayer.ui.songs.SongsViewModel
-import com.techdroidcentre.musicplayer.util.getCoverArt
-import com.techdroidcentre.musicplayer.util.getThumbnail
 
 @Composable
 fun PlaylistSongsScreen(
@@ -150,17 +146,8 @@ fun PlaylistSongItem(
     deleteSong: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
-    val coverArt = try {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            getThumbnail(context, song.coverArt)
-        } else {
-            getCoverArt(song.coverArt)
-        }
-    } catch (ex: Exception) {
-        null
-    }
+
     Column(
         modifier = modifier.fillMaxWidth()
             .clickable { playSong(song.mediaId) }
@@ -169,7 +156,7 @@ fun PlaylistSongItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = if (coverArt != null) rememberAsyncImagePainter(model = coverArt)
+                painter = if (song.coverArt != null) rememberAsyncImagePainter(model = song.coverArt)
                 else painterResource(id = R.drawable.ic_baseline_music_note_24),
                 contentDescription = null,
                 modifier = Modifier

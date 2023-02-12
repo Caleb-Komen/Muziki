@@ -1,7 +1,6 @@
 package com.techdroidcentre.musicplayer.ui.playlistsongs
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,8 +19,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -35,8 +32,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.techdroidcentre.data.R
 import com.techdroidcentre.musicplayer.model.SongData
 import com.techdroidcentre.musicplayer.ui.theme.MusicPlayerTheme
-import com.techdroidcentre.musicplayer.util.getCoverArt
-import com.techdroidcentre.musicplayer.util.getThumbnail
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -146,18 +141,8 @@ fun ToggleSongItem(
     onSelectedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
     val icon = if (selected) Icons.Default.Check else Icons.Default.Add
     val colour = if (selected) MaterialTheme.colors.secondary else Color.LightGray
-    val coverArt = try {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            getThumbnail(context, song.coverArt)
-        } else {
-            getCoverArt(song.coverArt)
-        }
-    } catch (ex: Exception) {
-        null
-    }
 
     Column(
         modifier = modifier
@@ -166,7 +151,7 @@ fun ToggleSongItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = if (coverArt != null) rememberAsyncImagePainter(model = coverArt)
+                painter = if (song.coverArt != null) rememberAsyncImagePainter(model = song.coverArt)
                 else painterResource(id = R.drawable.ic_baseline_music_note_24),
                 contentDescription = null,
                 modifier = Modifier
@@ -174,7 +159,7 @@ fun ToggleSongItem(
                     .clip(shape = MaterialTheme.shapes.small),
                 // when coverArt is null default music-note drawable is shown. Apply a colorFilter...
                 // ... to this drawable only
-                colorFilter = if (coverArt == null) ColorFilter.tint(color = MaterialTheme.colors.onPrimary)
+                colorFilter = if (song.coverArt == null) ColorFilter.tint(color = MaterialTheme.colors.onPrimary)
                 else null
             )
             Spacer(modifier = Modifier.width(8.dp))

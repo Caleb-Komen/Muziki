@@ -1,5 +1,7 @@
 package com.techdroidcentre.musicplayer.model
 
+import android.graphics.Bitmap
+
 data class SongData(
     val mediaId: String = "",
     val uri: String = "",
@@ -7,5 +9,5 @@ data class SongData(
     val subtitle: String = "",
     val description: String = "",
     val browsable: Boolean = false,
-    val coverArt: String = ""
+    val coverArt: Bitmap? = null
 )

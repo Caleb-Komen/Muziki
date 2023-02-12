@@ -35,7 +35,7 @@ class ArtistsViewModel @Inject constructor(
                     subtitle = it.description.subtitle.toString(),
                     description = it.description.description.toString(),
                     browsable = it.isBrowsable,
-                    coverArt = it.description.iconUri.toString()
+                    coverArt = it.description.iconBitmap
                 )
             }
             _artists.value = artistItems

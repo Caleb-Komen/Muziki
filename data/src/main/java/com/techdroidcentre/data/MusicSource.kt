@@ -1,16 +1,19 @@
 package com.techdroidcentre.data
 
+import android.content.Context
 import android.support.v4.media.MediaMetadataCompat
 import com.techdroidcentre.data.State.*
 import com.techdroidcentre.data.mapper.toMediaMetadataCompat
 import com.techdroidcentre.data.queries.MediaQuery
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MusicSource @Inject constructor(
     private val mediaQuery: MediaQuery,
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineDispatcher,
+    @ApplicationContext private val context: Context
 ) {
     var songs = emptyList<MediaMetadataCompat>()
 
@@ -45,7 +48,7 @@ class MusicSource @Inject constructor(
         val allSongs = mediaQuery.getAllSongs()
         allSongs?.let { it ->
             songs = it.map { song ->
-                song.toMediaMetadataCompat()
+                song.toMediaMetadataCompat(context)
             }
             state = STATE_INITIALISED
         } ?: run {

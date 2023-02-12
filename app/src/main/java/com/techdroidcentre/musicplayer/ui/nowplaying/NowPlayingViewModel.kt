@@ -24,7 +24,7 @@ class NowPlayingViewModel @Inject constructor(
             title = "Not Playing",
             subtitle = "",
             duration = 0L,
-            albumArt = ""
+            albumArt = null
         )
     )
     val isPlaying = MutableLiveData(false)
@@ -71,7 +71,7 @@ class NowPlayingViewModel @Inject constructor(
                 subtitle = mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE)
                     ?: "Unknown",
                 duration = duration,
-                albumArt = mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI)
+                albumArt = mediaMetadata.getBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON)
             )
             this.mediaMetadata.postValue(nowPlayingMetadata)
         }

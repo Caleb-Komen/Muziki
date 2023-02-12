@@ -110,7 +110,7 @@ class BrowseRoot @Inject constructor(
             putString(METADATA_KEY_TITLE, mediaMetadata.getString(METADATA_KEY_ARTIST))
             putString(METADATA_KEY_ARTIST, mediaMetadata.getString(METADATA_KEY_ARTIST))
             // use this media's art as artist cover-art
-            putString(METADATA_KEY_ART_URI, mediaMetadata.getString(METADATA_KEY_ART_URI))
+            putBitmap(METADATA_KEY_ART, mediaMetadata.getBitmap(METADATA_KEY_ART))
             putLong(METADATA_KEY_FLAG, FLAG_BROWSABLE.toLong())
         }.build()
 
