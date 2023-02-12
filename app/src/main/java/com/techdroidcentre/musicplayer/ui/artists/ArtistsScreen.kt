@@ -16,6 +16,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -96,16 +97,20 @@ fun ArtistItem(
         }
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = if (coverArt == null) painterResource(id = com.techdroidcentre.data.R.drawable.ic_account_music) else rememberAsyncImagePainter(model = coverArt),
+                painter = if (coverArt == null) painterResource(id = com.techdroidcentre.data.R.drawable.ic_account_music)
+                else rememberAsyncImagePainter(model = coverArt),
                 contentDescription = null,
                 modifier = Modifier
                     .height(150.dp)
                     .align(Alignment.CenterHorizontally)
                     .clip(shape = MaterialTheme.shapes.small),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                colorFilter = if (coverArt == null) ColorFilter.tint(color = MaterialTheme.colors.onPrimary)
+                else null
             )
             Text(
                 text = title,

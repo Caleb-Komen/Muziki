@@ -48,13 +48,15 @@ fun SongsListDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Column(
-            modifier = modifier.fillMaxSize()
+            modifier = modifier
+                .fillMaxSize()
                 .background(MaterialTheme.colors.surface)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = modifier.fillMaxWidth()
+                modifier = modifier
+                    .fillMaxWidth()
                     .padding(8.dp)
             ) {
                 TextButton(
@@ -75,7 +77,8 @@ fun SongsListDialog(
             if (songs.isNotEmpty()) {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = modifier.fillMaxSize()
+                    modifier = modifier
+                        .fillMaxSize()
                         .padding(8.dp)
                 ) {
                     items(items = songs, key = { song -> song.mediaId }) { song ->
@@ -179,7 +182,8 @@ fun ToggleSongItem(
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Box(
+            IconButton(
+                onClick = { onSelectedChange(!selected) },
                 modifier = Modifier
                     .size(42.dp)
                     .toggleable(
@@ -189,8 +193,7 @@ fun ToggleSongItem(
                     )
                     .drawBehind {
                         drawCircle(color = colour)
-                    },
-                contentAlignment = Alignment.Center
+                    }
             ) {
                 Icon(imageVector = icon, contentDescription = null)
             }

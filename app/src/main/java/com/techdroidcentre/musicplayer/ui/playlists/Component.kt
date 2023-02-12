@@ -46,8 +46,7 @@ fun CreatePlaylistDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Button(
-                        onClick = dismiss,
-                        enabled = name.isNotEmpty()
+                        onClick = dismiss
                     ) {
                         Text(text = "Cancel")
                     }

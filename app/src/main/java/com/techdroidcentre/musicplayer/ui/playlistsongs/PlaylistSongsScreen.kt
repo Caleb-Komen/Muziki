@@ -161,7 +161,9 @@ fun PlaylistSongItem(
                 contentDescription = null,
                 modifier = Modifier
                     .size(56.dp)
-                    .clip(shape = MaterialTheme.shapes.small)
+                    .clip(shape = MaterialTheme.shapes.small),
+                colorFilter = if (song.coverArt == null) ColorFilter.tint(color = MaterialTheme.colors.onPrimary)
+                else null
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column(modifier = Modifier.weight(1f)) {

@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -200,7 +201,9 @@ fun SongItem(
                     contentDescription = null,
                     modifier = Modifier
                         .size(56.dp)
-                        .clip(shape = MaterialTheme.shapes.small)
+                        .clip(shape = MaterialTheme.shapes.small),
+                    colorFilter = if (coverArt == null) ColorFilter.tint(color = MaterialTheme.colors.onPrimary)
+                    else null
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(modifier = Modifier.weight(1f)) {

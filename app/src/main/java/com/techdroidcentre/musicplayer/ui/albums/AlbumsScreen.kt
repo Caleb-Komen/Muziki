@@ -21,11 +21,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -104,30 +106,36 @@ fun AlbumItem(
         }
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = if (thumbnail == null) painterResource(id = com.techdroidcentre.data.R.drawable.ic_baseline_album_24) else rememberAsyncImagePainter(model = coverArt),
+                painter = if (thumbnail == null) painterResource(id = com.techdroidcentre.data.R.drawable.ic_baseline_album_24)
+                else rememberAsyncImagePainter(model = coverArt),
                 contentDescription = null,
                 modifier = Modifier
                     .height(150.dp)
                     .align(Alignment.CenterHorizontally)
                     .clip(shape = MaterialTheme.shapes.small),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                colorFilter = if (thumbnail == null) ColorFilter.tint(color = MaterialTheme.colors.onPrimary)
+                else null
             )
             Text(
                 text = title,
                 style = MaterialTheme.typography.body1,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier.padding(horizontal = 8.dp),
+                textAlign = TextAlign.Center
             )
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.body2,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier.padding(horizontal = 8.dp),
+                textAlign = TextAlign.Center
             )
         }
     }
