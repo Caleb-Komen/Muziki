@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.techdroidcentre.musicplayer.R
-import com.techdroidcentre.musicplayer.model.PlayListViewState
+import com.techdroidcentre.musicplayer.model.PlayListData
 import com.techdroidcentre.musicplayer.ui.theme.MusicPlayerTheme
 import kotlin.math.roundToInt
 
@@ -67,7 +67,7 @@ fun PlaylistScreen(
 
 @Composable
 fun PlaylistScreen(
-    playlists: List<PlayListViewState>,
+    playlists: List<PlayListData>,
     showDialog: () -> Unit,
     navigateToSongs: (Long) -> Unit,
     deletePlaylist: (Long) -> Unit,
@@ -226,7 +226,7 @@ fun PlaylistScreenPreview() {
     MusicPlayerTheme {
         Surface {
             PlaylistScreen(
-                playlists = List(15) { PlayListViewState(it.toLong(), "Playlist $it") },
+                playlists = List(15) { PlayListData(it.toLong(), "Playlist $it") },
                 {}, {}, {}
             )
 

@@ -2,9 +2,9 @@ package com.techdroidcentre.musicplayer.ui.playlists
 
 import androidx.lifecycle.*
 import com.techdroidcentre.data.repository.PlayListRepository
-import com.techdroidcentre.musicplayer.mapper.toModel
-import com.techdroidcentre.musicplayer.mapper.toViewState
-import com.techdroidcentre.musicplayer.model.PlayListViewState
+import com.techdroidcentre.musicplayer.mapper.toPlaylist
+import com.techdroidcentre.musicplayer.mapper.toPlaylistData
+import com.techdroidcentre.musicplayer.model.PlayListData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,13 +18,13 @@ class PlayListsViewModel @Inject constructor(
     private val _playlists = Transformations.switchMap(queryPlaylists) { load ->
         if (load) {
             Transformations.map(playlistRepository.getPlayLists()) { playlists ->
-                playlists.map { it.toViewState() }
+                playlists.map { it.toPlaylistData() }
             }
         } else {
             MutableLiveData(emptyList())
         }
     }
-    val playlists: LiveData<List<PlayListViewState>> = _playlists
+    val playlists: LiveData<List<PlayListData>> = _playlists
 
     init {
         loadPlaylists(true)
@@ -36,7 +36,7 @@ class PlayListsViewModel @Inject constructor(
 
     fun createPlaylist(name: String) {
         viewModelScope.launch {
-            playlistRepository.createPlaylist(PlayListViewState(0L, name).toModel())
+            playlistRepository.createPlaylist(PlayListData(0L, name).toPlaylist())
         }
     }
 

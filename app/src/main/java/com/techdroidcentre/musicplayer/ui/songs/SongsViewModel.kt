@@ -7,11 +7,11 @@ import androidx.lifecycle.*
 import com.techdroidcentre.data.SONGS_ROOT
 import com.techdroidcentre.data.repository.PlayListRepository
 import com.techdroidcentre.data.repository.PlayListSongRepository
-import com.techdroidcentre.musicplayer.mapper.toModel
+import com.techdroidcentre.musicplayer.mapper.toPlaylist
 import com.techdroidcentre.musicplayer.mapper.toPlaylistSong
 import com.techdroidcentre.musicplayer.mapper.toSongData
-import com.techdroidcentre.musicplayer.mapper.toViewState
-import com.techdroidcentre.musicplayer.model.PlayListViewState
+import com.techdroidcentre.musicplayer.mapper.toPlaylistData
+import com.techdroidcentre.musicplayer.model.PlayListData
 import com.techdroidcentre.musicplayer.model.SongData
 import com.techdroidcentre.musicplayer.ui.MEDIA_ID_KEY
 import com.techdroidcentre.musicplayer.ui.PLAYLIST_ID_KEY
@@ -19,7 +19,6 @@ import com.techdroidcentre.musicplayer.util.MusicServiceConnection
 import com.techdroidcentre.player.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import okhttp3.internal.filterList
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,9 +48,9 @@ class SongsViewModel @Inject constructor(
     val playlistSongs: LiveData<List<SongData>> = _playlistSongs
 
     private val _playlists = Transformations.map(playlistRepository.getPlayLists()) { playlists ->
-        playlists.map { it.toViewState() }
+        playlists.map { it.toPlaylistData() }
     }
-    val playlists: LiveData<List<PlayListViewState>> = _playlists
+    val playlists: LiveData<List<PlayListData>> = _playlists
 
     private val selectedSongs = mutableListOf<SongData>()
 
@@ -159,7 +158,7 @@ class SongsViewModel @Inject constructor(
 
     fun createPlaylist(name: String) {
         viewModelScope.launch {
-            playlistRepository.createPlaylist(PlayListViewState(0L, name).toModel())
+            playlistRepository.createPlaylist(PlayListData(0L, name).toPlaylist())
         }
     }
 }

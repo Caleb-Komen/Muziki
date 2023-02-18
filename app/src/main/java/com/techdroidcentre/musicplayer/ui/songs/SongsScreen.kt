@@ -34,7 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.techdroidcentre.musicplayer.model.PlayListViewState
+import com.techdroidcentre.musicplayer.model.PlayListData
 import com.techdroidcentre.musicplayer.model.SongData
 import com.techdroidcentre.musicplayer.ui.playlists.CreatePlaylistDialog
 import com.techdroidcentre.musicplayer.ui.theme.MusicPlayerTheme
@@ -87,7 +87,7 @@ fun SongsScreen(
 @Composable
 fun SongsCollection(
     songs: List<SongData>,
-    playlists: List<PlayListViewState>,
+    playlists: List<PlayListData>,
     playSong: (String) -> Unit,
     deleteSong: (String) -> Unit,
     addToPlaylist: (Long, SongData) -> Unit,
@@ -138,7 +138,7 @@ fun SongItem(
     artist: String,
     album: String,
     coverArt: Bitmap?,
-    playlists: List<PlayListViewState>,
+    playlists: List<PlayListData>,
     playSong: (String) -> Unit,
     deleteSong: () -> Unit,
     addToPlaylist: (Long) -> Unit,

@@ -2,15 +2,15 @@ package com.techdroidcentre.musicplayer.mapper
 
 import com.techdroidcentre.data.model.PlayList
 import com.techdroidcentre.data.model.PlayListSong
-import com.techdroidcentre.musicplayer.model.PlayListViewState
+import com.techdroidcentre.musicplayer.model.PlayListData
 import com.techdroidcentre.musicplayer.model.SongData
 
-fun PlayListViewState.toModel(): PlayList {
+fun PlayListData.toPlaylist(): PlayList {
     return PlayList(id = id, name = name)
 }
 
-fun PlayList.toViewState(): PlayListViewState {
-    return PlayListViewState(id = id, name = name)
+fun PlayList.toPlaylistData(): PlayListData {
+    return PlayListData(id = id, name = name)
 }
 
 fun PlayListSong.toSongData(): SongData {

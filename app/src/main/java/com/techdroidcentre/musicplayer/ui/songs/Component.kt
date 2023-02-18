@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.techdroidcentre.musicplayer.model.PlayListViewState
+import com.techdroidcentre.musicplayer.model.PlayListData
 
 @Composable
 fun SongDropdownMenu(
@@ -74,7 +74,7 @@ fun DeleteSongConfirmationDialog(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PlaylistsListDialog(
-    playlists: List<PlayListViewState>,
+    playlists: List<PlayListData>,
     onPlaylistClick: (Long) -> Unit,
     createPlaylist: () -> Unit,
     dismiss: () -> Unit,
@@ -153,7 +153,7 @@ fun EmptyPlaylistsList(modifier: Modifier = Modifier) {
 
 @Composable
 fun PlaylistItem(
-    playlist: PlayListViewState,
+    playlist: PlayListData,
     onPlaylistClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -183,7 +183,7 @@ fun PlaylistItem(
 fun PlaylistItemPreview() {
     Surface {
         PlaylistItem(
-            PlayListViewState(1L, "Country"), {}
+            PlayListData(1L, "Country"), {}
         )
     }
 }
