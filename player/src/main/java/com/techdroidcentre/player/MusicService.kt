@@ -100,7 +100,7 @@ class MusicService: MediaBrowserServiceCompat() {
         exoplayer.release()
         serviceJob.cancel()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            stopForeground(STOP_FOREGROUND_DETACH)
+            stopForeground(STOP_FOREGROUND_REMOVE)
         } else {
             stopForeground(true)
         }
@@ -191,7 +191,7 @@ class MusicService: MediaBrowserServiceCompat() {
     private val notificationListener = object: PlayerNotificationManager.NotificationListener{
         override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                stopForeground(STOP_FOREGROUND_DETACH)
+                stopForeground(STOP_FOREGROUND_REMOVE)
             } else {
                 stopForeground(true)
             }
