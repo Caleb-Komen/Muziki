@@ -3,16 +3,15 @@ package com.techdroidcentre.player
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
@@ -74,7 +73,6 @@ class MusicService: MediaBrowserServiceCompat() {
         serviceScope.launch {
             musicSource.fetchSongs()
         }
-//        exoplayer.addListener(MusicPlayerEventListener())
 
         val musicPlaybackPreparer = MusicPlaybackPreparer(musicSource, deleteSong) { mediaMetaData, playWhenReady, parentId, songIds ->
             val mediaMetaDataList = buildPlayList(mediaMetaData, parentId, songIds)
@@ -85,8 +83,6 @@ class MusicService: MediaBrowserServiceCompat() {
             exoplayer.setMediaItems(mediaMetaDataList.map { it.toMediaItem() })
             exoplayer.seekTo(currentItemIndex, playbackPosition)
             exoplayer.prepare()
-//            if (playWhenReady)
-//                playbackNotification.showNotification(exoplayer)
         }
 
         mediaSessionConnector = MediaSessionConnector(mediaSession)
@@ -103,7 +99,11 @@ class MusicService: MediaBrowserServiceCompat() {
         }
         exoplayer.release()
         serviceJob.cancel()
-        stopForeground(true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            stopForeground(STOP_FOREGROUND_DETACH)
+        } else {
+            stopForeground(true)
+        }
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
@@ -190,7 +190,11 @@ class MusicService: MediaBrowserServiceCompat() {
 
     private val notificationListener = object: PlayerNotificationManager.NotificationListener{
         override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
-            stopForeground(true)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                stopForeground(STOP_FOREGROUND_DETACH)
+            } else {
+                stopForeground(true)
+            }
             isForegroundService = false
             stopSelf()
         }
