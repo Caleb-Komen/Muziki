@@ -2,13 +2,17 @@ package com.techdroidcentre.player
 
 import android.app.Notification
 import android.app.PendingIntent
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
@@ -33,7 +37,11 @@ class MusicService: MediaBrowserServiceCompat() {
 
     private lateinit var mediaSessionConnector: MediaSessionConnector
 
+    private lateinit var playbackNotification: PlaybackNotification
+
     private var currentPlaylistItems: List<MediaMetadataCompat> = emptyList()
+
+    var isForegroundService = false
 
     private val serviceJob = SupervisorJob()
     private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
@@ -61,9 +69,12 @@ class MusicService: MediaBrowserServiceCompat() {
         }
         sessionToken = mediaSession.sessionToken
 
+        playbackNotification = PlaybackNotification(this, mediaSession, notificationListener)
+
         serviceScope.launch {
             musicSource.fetchSongs()
         }
+//        exoplayer.addListener(MusicPlayerEventListener())
 
         val musicPlaybackPreparer = MusicPlaybackPreparer(musicSource, deleteSong) { mediaMetaData, playWhenReady, parentId, songIds ->
             val mediaMetaDataList = buildPlayList(mediaMetaData, parentId, songIds)
@@ -74,14 +85,15 @@ class MusicService: MediaBrowserServiceCompat() {
             exoplayer.setMediaItems(mediaMetaDataList.map { it.toMediaItem() })
             exoplayer.seekTo(currentItemIndex, playbackPosition)
             exoplayer.prepare()
-            if (playWhenReady)
-                PlaybackNotification(this, mediaSession, notificationListener).showNotification(exoplayer)
+//            if (playWhenReady)
+//                playbackNotification.showNotification(exoplayer)
         }
 
         mediaSessionConnector = MediaSessionConnector(mediaSession)
         mediaSessionConnector.setPlaybackPreparer(musicPlaybackPreparer)
         mediaSessionConnector.setQueueNavigator(MusicQueueNavigator(mediaSession))
         mediaSessionConnector.setPlayer(exoplayer)
+        playbackNotification.showNotification(exoplayer)
     }
 
     override fun onDestroy() {
@@ -92,6 +104,13 @@ class MusicService: MediaBrowserServiceCompat() {
         exoplayer.release()
         serviceJob.cancel()
         stopForeground(true)
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        exoplayer.stop()
+        exoplayer.clearMediaItems()
+        playbackNotification.hideNotification()
     }
 
     private fun buildPlayList(
@@ -172,6 +191,7 @@ class MusicService: MediaBrowserServiceCompat() {
     private val notificationListener = object: PlayerNotificationManager.NotificationListener{
         override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
             stopForeground(true)
+            isForegroundService = false
             stopSelf()
         }
 
@@ -180,8 +200,13 @@ class MusicService: MediaBrowserServiceCompat() {
             notification: Notification,
             ongoing: Boolean
         ) {
-            if (ongoing) {
+            if (ongoing && !isForegroundService) {
+                ContextCompat.startForegroundService(
+                    applicationContext,
+                    Intent(applicationContext, this@MusicService.javaClass)
+                )
                 startForeground(notificationId, notification)
+                isForegroundService = true
             }
         }
     }
