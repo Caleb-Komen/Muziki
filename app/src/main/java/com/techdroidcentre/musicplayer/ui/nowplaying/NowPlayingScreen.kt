@@ -188,7 +188,7 @@ fun PlaybackControls(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_baseline_skip_previous_24),
-                contentDescription = "skip previous",
+                contentDescription = "skip to previous",
                 modifier = Modifier.size(48.dp)
             )
         }
@@ -200,7 +200,7 @@ fun PlaybackControls(
             if (isPlaying) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_pause_24),
-                    contentDescription = "play",
+                    contentDescription = "pause",
                     modifier = Modifier.size(48.dp)
                 )
             } else {
@@ -217,7 +217,7 @@ fun PlaybackControls(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_baseline_skip_next_24),
-                contentDescription = "skip next",
+                contentDescription = "skip to next",
                 modifier = Modifier.size(48.dp)
             )
         }
@@ -254,7 +254,7 @@ fun NowPlayingClosedSheet(
                 if (isPlaying) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_baseline_pause_24),
-                        contentDescription = "play",
+                        contentDescription = "pause",
                         modifier = Modifier.size(48.dp)
                     )
                 } else {
